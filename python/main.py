@@ -14,7 +14,7 @@ from src.benchmark import run_benchmark
 from src.extract import extract_corpus, load_abstracts
 from src.preprocess import word_frequencies
 
-BASE = Path(__file__).resolve().parent
+BASE = Path(__file__).resolve().parent.parent  # raiz del repositorio
 
 DEMO_TEXTS = [
     "Generative artificial intelligence models generate text, images and code. "
@@ -57,7 +57,7 @@ def main():
             raise SystemExit("No hay abstracts. Coloca los PDFs en data/pdfs y ejecuta: python main.py extract")
 
     freqs = word_frequencies(texts)
-    timings, tops, ok = run_benchmark(freqs, repeats=args.repeats, out_dir=BASE / "results")
+    timings, tops, ok = run_benchmark(freqs, repeats=args.repeats, out_dir=BASE / "results" / "python")
     print_results(freqs, timings, tops, ok)
 
 

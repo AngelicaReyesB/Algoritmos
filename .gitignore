@@ -1,8 +1,27 @@
+# Python
 __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.log
+
+# IDEs
 .idea/
 .vscode/
-# Corpus entregado por el docente (no se versiona)
+*.iml
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Corpus de PDFs (no se versiona)
 data/pdfs/*.pdf
+
+# Resultados generados al ejecutar
+results/**/*.csv
+results/**/*.png
