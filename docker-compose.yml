@@ -1,0 +1,18 @@
+# Base de datos PostgreSQL 16 para el proyecto.
+# Levantar:  docker compose up -d
+# Detener:   docker compose down
+services:
+  postgres:
+    image: postgres:16
+    container_name: ranking-postgres
+    environment:
+      POSTGRES_DB: ranking
+      POSTGRES_USER: ranking
+      POSTGRES_PASSWORD: ranking
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

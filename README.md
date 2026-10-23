@@ -42,7 +42,15 @@ python main.py run --repeats 200
 
 ### Versión Java
 
-Pendiente (ver tarjeta CONF-03: selección de tecnologías).
+Requisitos: Java 21 y Docker.
+
+```bash
+docker compose up -d          # levanta PostgreSQL 16 (puerto 55432)
+cd java
+./mvnw spring-boot:run        # en Windows (CMD): mvnw.cmd spring-boot:run
+```
+
+La aplicación queda en http://localhost:8080
 
 ## Organización del trabajo
 
