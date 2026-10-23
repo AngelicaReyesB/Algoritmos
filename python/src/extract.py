@@ -71,5 +71,5 @@ def load_abstracts(abs_dir: Path):
 
 
 if __name__ == "__main__":
-    base = Path(__file__).resolve().parent.parent
+    base = Path(__file__).resolve().parent.parent.parent
     sys.exit(0 if extract_corpus(base / "data" / "pdfs", base / "data" / "abstracts") else 1)
