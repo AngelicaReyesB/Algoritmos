@@ -18,11 +18,12 @@ todo nos durante todos uno les ni contra otros ese eso ante ellos e esto antes a
 """.split())
 
 _TOKEN_RE = re.compile(r"[a-záéíóúüñ]+")
+_URL_RE = re.compile(r"https?://\S+|www\.\S+|\b[\w.-]+\.(?:com|org|net|io|edu|google)\b\S*")
 
 
 def tokenize(text: str, min_len: int = 3) -> List[str]:
-    """Minusculas, solo letras, sin stopwords, longitud minima."""
-    text = text.lower()
+    """Minusculas, sin URLs, solo letras, sin stopwords, longitud minima."""
+    text = _URL_RE.sub(" ", text.lower())
     return [t for t in _TOKEN_RE.findall(text) if len(t) >= min_len and t not in STOPWORDS]
 
 
