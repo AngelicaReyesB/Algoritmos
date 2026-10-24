@@ -301,3 +301,44 @@ h1, h2, h3 {
     margin: 0;
     overflow-wrap: anywhere;
 }
+
+
+/* ===== Vista de articulos ===== */
+.insignia--aviso {
+    background: #fff4e0;
+    color: #8a5300;
+}
+
+.articulo {
+    padding: 12px 0;
+    border-top: 1px solid var(--color-borde);
+}
+
+.articulo__encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.articulo__archivo {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.articulo__titulo {
+    margin: 4px 0 8px;
+    font-size: 0.9rem;
+    color: var(--color-texto-suave);
+}
+
+.articulo summary {
+    color: var(--color-primario);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.articulo__resumen {
+    margin: 8px 0 0;
+    text-align: justify;
+}
