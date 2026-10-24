@@ -24,13 +24,26 @@ public class ContadorFrecuencias {
         this.tokenizador = tokenizador;
     }
 
+    /** Tokeniza todos los textos y cuenta los terminos. */
     public List<FrecuenciaTermino> contar(List<String> textos) {
-        Map<String, Integer> frecuencias = new LinkedHashMap<>();
+        return contarTerminos(tokenizarTodos(textos));
+    }
+
+    /** Preprocesamiento: une en una sola lista los terminos de todos los textos. */
+    public List<String> tokenizarTodos(List<String> textos) {
+        List<String> terminos = new ArrayList<>();
         for (String texto : textos) {
-            for (String termino : tokenizador.tokenizar(texto)) {
-                // Si el termino no existe empieza en 0; luego suma 1
-                frecuencias.put(termino, frecuencias.getOrDefault(termino, 0) + 1);
-            }
+            terminos.addAll(tokenizador.tokenizar(texto));
+        }
+        return terminos;
+    }
+
+    /** Conteo: frecuencia de cada termino, en orden de primera aparicion. */
+    public List<FrecuenciaTermino> contarTerminos(List<String> terminos) {
+        Map<String, Integer> frecuencias = new LinkedHashMap<>();
+        for (String termino : terminos) {
+            // Si el termino no existe empieza en 0; luego suma 1
+            frecuencias.put(termino, frecuencias.getOrDefault(termino, 0) + 1);
         }
 
         List<FrecuenciaTermino> resultado = new ArrayList<>(frecuencias.size());
