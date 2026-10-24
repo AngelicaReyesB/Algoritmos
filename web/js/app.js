@@ -4,6 +4,7 @@
  * - Verifica que la API responda y muestra un resumen del corpus.
  */
 import { obtenerRanking } from "./api.js";
+import { cargarArticulos } from "./vistaArticulos.js";
 import { cargarRanking } from "./vistaRanking.js";
 import { medirTiempos } from "./vistaTiempos.js";
 
@@ -44,4 +45,5 @@ document.getElementById("selector-top").addEventListener("change", cargarRanking
 document.getElementById("boton-medir").addEventListener("click", medirTiempos);
 
 verificarApi();
+cargarArticulos();
 cargarRanking();
