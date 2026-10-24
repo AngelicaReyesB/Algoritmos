@@ -5,6 +5,7 @@
  */
 import { obtenerRanking } from "./api.js";
 import { cargarRanking } from "./vistaRanking.js";
+import { medirTiempos } from "./vistaTiempos.js";
 
 const pestanas = document.querySelectorAll(".pestana");
 const vistas = document.querySelectorAll(".vista");
@@ -40,6 +41,7 @@ pestanas.forEach((pestana) => {
 });
 
 document.getElementById("selector-top").addEventListener("change", cargarRanking);
+document.getElementById("boton-medir").addEventListener("click", medirTiempos);
 
 verificarApi();
 cargarRanking();
