@@ -1,0 +1,341 @@
+{
+  "info": {
+    "_postman_id": "d09346f1-72b4-4f4c-8a31-a72f4548237a",
+    "name": "Ranking API - Análisis de Algoritmos",
+    "description": "Pruebas de la API REST del seguimiento: ranking de términos con Counting, Radix y Bucket Sort.\n\nRequisitos: PostgreSQL en Docker (`docker compose up -d`) y la aplicación corriendo (`./mvnw spring-boot:run`).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Artículos",
+      "item": [
+        {
+          "name": "Listar artículos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200 OK\", () => pm.response.to.have.status(200));",
+                  "",
+                  "const articulos = pm.response.json();",
+                  "",
+                  "pm.test(\"Devuelve una lista con 20 artículos\", () => {",
+                  "    pm.expect(articulos).to.be.an(\"array\").with.lengthOf(20);",
+                  "});",
+                  "",
+                  "pm.test(\"Cada artículo tiene archivo, resumen y la marca manual\", () => {",
+                  "    articulos.forEach(a => {",
+                  "        pm.expect(a).to.have.property(\"archivo\").that.is.a(\"string\").and.not.empty;",
+                  "        pm.expect(a).to.have.property(\"resumen\").that.is.a(\"string\").and.not.empty;",
+                  "        pm.expect(a).to.have.property(\"manual\").that.is.a(\"boolean\");",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"El artículo 20 tiene la corrección manual\", () => {",
+                  "    const a20 = articulos.find(a => a.archivo === \"20_generative_agents.pdf\");",
+                  "    pm.expect(a20, \"no existe 20_generative_agents.pdf\").to.exist;",
+                  "    pm.expect(a20.manual).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/articulos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "articulos"
+              ]
+            },
+            "description": "Devuelve los 20 artículos cargados en la base de datos."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ranking",
+      "item": [
+        {
+          "name": "Top 15 (por defecto)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200 OK\", () => pm.response.to.have.status(200));",
+                  "",
+                  "const r = pm.response.json();",
+                  "const nombres = [\"Counting Sort\", \"Radix Sort\", \"Bucket Sort\"];",
+                  "const top = Number(pm.request.url.query.get(\"top\") || 15);",
+                  "",
+                  "pm.test(\"Incluye los 3 algoritmos\", () => {",
+                  "    pm.expect(Object.keys(r.rankings)).to.have.members(nombres);",
+                  "});",
+                  "",
+                  "pm.test(\"Cada ranking tiene \" + top + \" términos\", () => {",
+                  "    nombres.forEach(n => pm.expect(r.rankings[n], n).to.have.lengthOf(Math.min(top, r.terminosDistintos)));",
+                  "});",
+                  "",
+                  "pm.test(\"Los 3 rankings son idénticos (coinciden = true)\", () => {",
+                  "    pm.expect(r.coinciden).to.be.true;",
+                  "    const referencia = JSON.stringify(r.rankings[\"Counting Sort\"]);",
+                  "    nombres.forEach(n => pm.expect(JSON.stringify(r.rankings[n]), n).to.eql(referencia));",
+                  "});",
+                  "",
+                  "pm.test(\"Ordenado de mayor a menor frecuencia\", () => {",
+                  "    const f = r.rankings[\"Counting Sort\"].map(t => t.frecuencia);",
+                  "    for (let i = 1; i < f.length; i++) {",
+                  "        pm.expect(f[i - 1], \"posición \" + i).to.be.at.least(f[i]);",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"El primer término tiene la frecuencia máxima (k)\", () => {",
+                  "    pm.expect(r.rankings[\"Counting Sort\"][0].frecuencia).to.eql(r.frecuenciaMaxima);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ranking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ranking"
+              ]
+            },
+            "description": "Top 15 de los tres algoritmos. Sin parámetro `top` usa 15."
+          }
+        },
+        {
+          "name": "Top 5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200 OK\", () => pm.response.to.have.status(200));",
+                  "",
+                  "const r = pm.response.json();",
+                  "const nombres = [\"Counting Sort\", \"Radix Sort\", \"Bucket Sort\"];",
+                  "const top = Number(pm.request.url.query.get(\"top\") || 15);",
+                  "",
+                  "pm.test(\"Incluye los 3 algoritmos\", () => {",
+                  "    pm.expect(Object.keys(r.rankings)).to.have.members(nombres);",
+                  "});",
+                  "",
+                  "pm.test(\"Cada ranking tiene \" + top + \" términos\", () => {",
+                  "    nombres.forEach(n => pm.expect(r.rankings[n], n).to.have.lengthOf(Math.min(top, r.terminosDistintos)));",
+                  "});",
+                  "",
+                  "pm.test(\"Los 3 rankings son idénticos (coinciden = true)\", () => {",
+                  "    pm.expect(r.coinciden).to.be.true;",
+                  "    const referencia = JSON.stringify(r.rankings[\"Counting Sort\"]);",
+                  "    nombres.forEach(n => pm.expect(JSON.stringify(r.rankings[n]), n).to.eql(referencia));",
+                  "});",
+                  "",
+                  "pm.test(\"Ordenado de mayor a menor frecuencia\", () => {",
+                  "    const f = r.rankings[\"Counting Sort\"].map(t => t.frecuencia);",
+                  "    for (let i = 1; i < f.length; i++) {",
+                  "        pm.expect(f[i - 1], \"posición \" + i).to.be.at.least(f[i]);",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(\"El primer término tiene la frecuencia máxima (k)\", () => {",
+                  "    pm.expect(r.rankings[\"Counting Sort\"][0].frecuencia).to.eql(r.frecuenciaMaxima);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ranking?top=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ranking"
+              ],
+              "query": [
+                {
+                  "key": "top",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Top 5 de los tres algoritmos."
+          }
+        },
+        {
+          "name": "Error: top = 0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400 Bad Request\", () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test(\"Explica el motivo del error\", () => {",
+                  "    pm.expect(pm.response.json().message).to.include(\"entre 1 y 100\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ranking?top=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ranking"
+              ],
+              "query": [
+                {
+                  "key": "top",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "`top` menor que 1 debe responder 400."
+          }
+        },
+        {
+          "name": "Error: top = 101",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 400 Bad Request\", () => pm.response.to.have.status(400));",
+                  "",
+                  "pm.test(\"Explica el motivo del error\", () => {",
+                  "    pm.expect(pm.response.json().message).to.include(\"entre 1 y 100\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ranking?top=101",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ranking"
+              ],
+              "query": [
+                {
+                  "key": "top",
+                  "value": "101"
+                }
+              ]
+            },
+            "description": "`top` mayor que 100 debe responder 400."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tiempos",
+      "item": [
+        {
+          "name": "Medir tiempos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Responde 200 OK\", () => pm.response.to.have.status(200));",
+                  "",
+                  "const r = pm.response.json();",
+                  "const etapas = [",
+                  "    \"Extraccion PDF (PDFBox)\", \"Lectura de abstracts (BD)\", \"Preprocesamiento\",",
+                  "    \"Conteo de frecuencias\", \"Counting Sort\", \"Radix Sort\", \"Bucket Sort\"",
+                  "];",
+                  "",
+                  "pm.test(\"Mide las 7 etapas\", () => {",
+                  "    pm.expect(r.resultados.map(x => x.etapa)).to.eql(etapas);",
+                  "});",
+                  "",
+                  "pm.test(\"Las estadísticas son coherentes (0 <= mínimo <= media, desviación >= 0)\", () => {",
+                  "    r.resultados.forEach(x => {",
+                  "        pm.expect(x.minimoMs, x.etapa).to.be.at.least(0);",
+                  "        pm.expect(x.minimoMs, x.etapa).to.be.at.most(x.mediaMs);",
+                  "        pm.expect(x.desviacionMs, x.etapa).to.be.at.least(0);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Los 3 algoritmos producen el mismo ranking\", () => {",
+                  "    pm.expect(r.coinciden).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Incluye los datos del equipo\", () => {",
+                  "    pm.expect(r.equipo.nucleos).to.be.above(0);",
+                  "    pm.expect(r.equipo.memoriaTotalMb).to.be.above(0);",
+                  "    pm.expect(r.equipo.versionJava).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "// Muestra la tabla de tiempos en la consola de Postman (View > Show Postman Console)",
+                  "console.table(r.resultados);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tiempos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tiempos"
+              ]
+            },
+            "description": "Ejecuta la medición completa (~4 s): extracción PDF, lectura BD, preprocesamiento, conteo y los 3 algoritmos."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

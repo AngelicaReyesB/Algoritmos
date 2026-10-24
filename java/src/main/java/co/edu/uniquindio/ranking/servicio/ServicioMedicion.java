@@ -6,6 +6,7 @@ import co.edu.uniquindio.ranking.algoritmos.CountingSort;
 import co.edu.uniquindio.ranking.algoritmos.RadixSort;
 import co.edu.uniquindio.ranking.medicion.InformacionEquipo;
 import co.edu.uniquindio.ranking.medicion.MedicionManual;
+import co.edu.uniquindio.ranking.medicion.ReporteMedicion;
 import co.edu.uniquindio.ranking.medicion.ResultadoMedicion;
 import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
@@ -91,7 +92,11 @@ public class ServicioMedicion implements CommandLineRunner {
         medirTodo();
     }
 
-    public void medirTodo() throws IOException {
+    /**
+     * synchronized: si llegan dos peticiones a la vez, la segunda espera.
+     * Dos mediciones simultaneas se estorbarian y los tiempos no servirian.
+     */
+    public synchronized ReporteMedicion medirTodo() throws IOException {
         List<ResultadoMedicion> resultados = new ArrayList<>();
 
         // Etapa 1: extraccion de abstracts desde los PDF (lectura PDFBox + extraccion)
@@ -134,9 +139,11 @@ public class ServicioMedicion implements CommandLineRunner {
             frecuenciaMaxima = Math.max(frecuenciaMaxima, f.frecuencia());
         }
 
-        InformacionEquipo equipo = InformacionEquipo.obtener();
-        imprimir(resultados, terminos.size(), frecuencias.size(), frecuenciaMaxima, coinciden, equipo);
-        guardar(resultados, algoritmos, rankings, terminos.size(), frecuencias.size(), frecuenciaMaxima, equipo);
+        ReporteMedicion reporte = new ReporteMedicion(resultados, terminos.size(), frecuencias.size(),
+                frecuenciaMaxima, coinciden, InformacionEquipo.obtener());
+        imprimir(reporte);
+        guardar(reporte, algoritmos, rankings);
+        return reporte;
     }
 
     /** Lee y extrae todos los PDF. Es la tarea que se mide en la etapa 1. */
@@ -153,29 +160,30 @@ public class ServicioMedicion implements CommandLineRunner {
         return resumenes;
     }
 
-    private void imprimir(List<ResultadoMedicion> resultados, int totalTerminos, int n, int k,
-                          boolean coinciden, InformacionEquipo equipo) {
+    private void imprimir(ReporteMedicion reporte) {
         log.info("========== MEDICION DE TIEMPOS (ms) ==========");
         log.info(String.format(Locale.ROOT, "%-28s %6s %10s %10s %10s", "Etapa", "Rep.", "Media", "Desv.", "Minimo"));
-        for (ResultadoMedicion r : resultados) {
+        for (ResultadoMedicion r : reporte.resultados()) {
             log.info(String.format(Locale.ROOT, "%-28s %6d %10.4f %10.4f %10.4f",
                     r.etapa(), r.repeticiones(), r.mediaMs(), r.desviacionMs(), r.minimoMs()));
         }
-        log.info("Terminos totales: {} | Terminos distintos (n): {} | Frecuencia maxima (k): {}", totalTerminos, n, k);
-        log.info("Los 3 algoritmos producen el mismo ranking: {}", coinciden ? "SI" : "NO <-- revisar");
-        log.info("Equipo: {}", equipo);
+        log.info("Terminos totales: {} | Terminos distintos (n): {} | Frecuencia maxima (k): {}",
+                reporte.terminosTotales(), reporte.terminosDistintos(), reporte.frecuenciaMaxima());
+        log.info("Los 3 algoritmos producen el mismo ranking: {}", reporte.coinciden() ? "SI" : "NO <-- revisar");
+        log.info("Equipo: {}", reporte.equipo());
         log.info("Resultados guardados en {}", carpetaResultados.toAbsolutePath().normalize());
     }
 
-    private void guardar(List<ResultadoMedicion> resultados, List<AlgoritmoOrdenamiento> algoritmos,
-                         List<List<FrecuenciaTermino>> rankings, int totalTerminos, int n, int k,
-                         InformacionEquipo equipo) throws IOException {
+    private void guardar(ReporteMedicion reporte, List<AlgoritmoOrdenamiento> algoritmos,
+                         List<List<FrecuenciaTermino>> rankings) throws IOException {
         Files.createDirectories(carpetaResultados);
+        InformacionEquipo equipo = reporte.equipo();
+        int n = reporte.terminosDistintos();
 
         // tiempos.csv
         List<String> lineas = new ArrayList<>();
         lineas.add("etapa,repeticiones,media_ms,desviacion_ms,minimo_ms");
-        for (ResultadoMedicion r : resultados) {
+        for (ResultadoMedicion r : reporte.resultados()) {
             lineas.add(String.format(Locale.ROOT, "%s,%d,%.4f,%.4f,%.4f",
                     r.etapa(), r.repeticiones(), r.mediaMs(), r.desviacionMs(), r.minimoMs()));
         }
@@ -206,8 +214,8 @@ public class ServicioMedicion implements CommandLineRunner {
                 "Memoria RAM total (MB): " + equipo.memoriaTotalMb(),
                 "Sistema operativo: " + equipo.sistemaOperativo(),
                 "Java: " + equipo.versionJava(),
-                "Terminos totales: " + totalTerminos,
+                "Terminos totales: " + reporte.terminosTotales(),
                 "Terminos distintos (n): " + n,
-                "Frecuencia maxima (k): " + k));
+                "Frecuencia maxima (k): " + reporte.frecuenciaMaxima()));
     }
 }
