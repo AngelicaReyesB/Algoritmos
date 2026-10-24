@@ -342,3 +342,23 @@ h1, h2, h3 {
     margin: 8px 0 0;
     text-align: justify;
 }
+
+
+/* ===== Comparacion de graficos: sin librerias vs Chart.js ===== */
+.comparacion-graficos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: calc(var(--espacio) * 2);
+    margin-bottom: var(--espacio);
+}
+
+.comparacion-graficos h4 {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    color: var(--color-texto-suave);
+}
+
+.grafico-chartjs {
+    position: relative; /* Chart.js lo necesita para ajustar el tamano del canvas */
+    width: 100%;
+}
