@@ -4,6 +4,7 @@
  * - Verifica que la API responda y muestra un resumen del corpus.
  */
 import { obtenerRanking } from "./api.js";
+import { cargarRanking } from "./vistaRanking.js";
 
 const pestanas = document.querySelectorAll(".pestana");
 const vistas = document.querySelectorAll(".vista");
@@ -38,4 +39,7 @@ pestanas.forEach((pestana) => {
     pestana.addEventListener("click", () => mostrarVista(pestana.dataset.vista));
 });
 
+document.getElementById("selector-top").addEventListener("change", cargarRanking);
+
 verificarApi();
+cargarRanking();

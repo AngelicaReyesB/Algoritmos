@@ -34,7 +34,16 @@
         <section id="vista-ranking" class="vista" role="tabpanel" hidden>
             <h2>Top 15 de términos</h2>
             <p class="descripcion">Términos más frecuentes ordenados con cada algoritmo.</p>
-            <div id="contenido-ranking" class="tarjeta">Pendiente (FE-03).</div>
+            <label class="control">
+                Cantidad de términos:
+                <select id="selector-top">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15" selected>15</option>
+                    <option value="20">20</option>
+                </select>
+            </label>
+            <div id="contenido-ranking" class="tarjeta">Cargando…</div>
         </section>
 
         <section id="vista-tiempos" class="vista" role="tabpanel" hidden>

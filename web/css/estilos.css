@@ -133,3 +133,123 @@ h1, h2, h3 {
     font-size: 0.85rem;
     color: var(--color-texto-suave);
 }
+
+
+/* ===== Elementos comunes de las vistas ===== */
+.control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: var(--espacio);
+}
+
+.control select {
+    padding: 6px 8px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    font: inherit;
+}
+
+.mensaje-error {
+    margin: 0;
+    color: var(--color-error);
+}
+
+.resumen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+    margin-bottom: var(--espacio);
+}
+
+.resumen p {
+    margin: 0;
+}
+
+.insignia {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.insignia--ok {
+    background: #e3f4ea;
+    color: var(--color-exito);
+}
+
+.insignia--error {
+    background: #fde8e7;
+    color: var(--color-error);
+}
+
+/* ===== Tablas ===== */
+.tabla-desplazable {
+    overflow-x: auto; /* en celular la tabla se desliza en vez de romper el diseno */
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.tabla th,
+.tabla td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-borde);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.tabla th {
+    background: var(--color-fondo);
+    font-weight: 600;
+}
+
+.tabla .numero {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.celda-diferente {
+    background: #fde8e7;
+    color: var(--color-error);
+}
+
+/* ===== Grafico de barras (HTML y CSS, sin librerias) ===== */
+.grafico {
+    display: grid;
+    gap: 6px;
+}
+
+.barra {
+    display: grid;
+    grid-template-columns: 120px 1fr 40px;
+    align-items: center;
+    gap: 8px;
+}
+
+.barra__etiqueta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.barra__pista {
+    height: 18px;
+    background: var(--color-primario-suave);
+    border-radius: 4px;
+}
+
+.barra__relleno {
+    height: 100%;
+    background: var(--color-primario);
+    border-radius: 4px;
+}
+
+.barra__valor {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
