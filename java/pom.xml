@@ -40,6 +40,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Lectura de PDF (version con librerias) -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.4</version>
+		</dependency>
+
 		<!-- Pruebas: incluye JUnit 5 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
