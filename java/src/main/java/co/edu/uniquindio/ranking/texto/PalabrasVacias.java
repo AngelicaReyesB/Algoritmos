@@ -1,7 +1,7 @@
 package co.edu.uniquindio.ranking.texto;
 
+import java.util.HashSet;
 import java.util.Set;
-
 /**
  * Palabras vacias (stopwords): palabras muy frecuentes que no aportan
  * informacion sobre el tema del texto y se eliminan antes de contar.
@@ -44,6 +44,13 @@ public final class PalabrasVacias {
 
     private PalabrasVacias() {
         // Clase de utilidad: no se crean objetos de ella
+    }
+
+    /** Todas las palabras vacias (base + dominio). La usa TokenizadorLucene. */
+    public static Set<String> todas() {
+        Set<String> todas = new HashSet<>(BASE);
+        todas.addAll(DOMINIO);
+        return todas;
     }
 
     /** Devuelve true si la palabra (en minusculas) debe descartarse. */

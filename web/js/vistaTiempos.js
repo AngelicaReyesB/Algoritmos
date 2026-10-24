@@ -48,6 +48,7 @@ function crearResumen(reporte) {
         <div class="resumen">
             <p>Términos totales: <strong>${reporte.terminosTotales}</strong></p>
             <p>Términos distintos (n): <strong>${reporte.terminosDistintos}</strong></p>
+            <p>Términos distintos con Lucene: <strong>${reporte.terminosDistintosLucene}</strong></p>            
             <p>Frecuencia máxima (k): <strong>${reporte.frecuenciaMaxima}</strong></p>
             ${validacion}
         </div>

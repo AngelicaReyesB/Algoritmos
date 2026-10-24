@@ -24,7 +24,8 @@ public class TokenizadorPropio implements Tokenizador {
 
     private static final int LONGITUD_MINIMA = 2;
 
-    private static final Pattern URL = Pattern.compile(
+    /** Tambien la usa TokenizadorLucene, para que ambos limpien el texto igual. */
+    static final Pattern URL = Pattern.compile(
             "https?://\\S+|www\\.\\S+|\\b[\\w.-]+\\.(com|org|net|io|edu|google)\\b\\S*");
 
     @Override

@@ -8,12 +8,14 @@ import java.util.List;
  *
  * @param resultados        tiempos de cada etapa
  * @param terminosTotales   terminos despues del preprocesamiento (con repeticiones)
- * @param terminosDistintos n: terminos distintos
+ * @param terminosDistintos n: terminos distintos (tokenizador propio)
+ * @param terminosDistintosLucene terminos distintos con el tokenizador de Lucene
  * @param frecuenciaMaxima  k: frecuencia del termino mas comun
  * @param coinciden         true si los tres algoritmos dieron el mismo ranking
  * @param equipo            caracteristicas del equipo
  */
 public record ReporteMedicion(List<ResultadoMedicion> resultados, int terminosTotales,
-                              int terminosDistintos, int frecuenciaMaxima, boolean coinciden,
+                              int terminosDistintos, int terminosDistintosLucene,
+                              int frecuenciaMaxima, boolean coinciden,
                               InformacionEquipo equipo) {
 }

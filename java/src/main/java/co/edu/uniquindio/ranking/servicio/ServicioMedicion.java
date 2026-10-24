@@ -13,6 +13,7 @@ import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
 import co.edu.uniquindio.ranking.repositorio.RepositorioArticulos;
 import co.edu.uniquindio.ranking.texto.ContadorFrecuencias;
+import co.edu.uniquindio.ranking.texto.TokenizadorLucene;
 import co.edu.uniquindio.ranking.texto.TokenizadorPropio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,10 +111,17 @@ public class ServicioMedicion implements CommandLineRunner {
         List<String> textos = repositorio.listarResumenes();
 
         // Etapa 3: preprocesamiento (tokenizar todos los abstracts)
+        // 3a. Tokenizador propio (version sin librerias)
         ContadorFrecuencias contador = new ContadorFrecuencias(new TokenizadorPropio());
-        resultados.add(medicion.medir("Preprocesamiento",
+        resultados.add(medicion.medir("Preprocesamiento (propio)",
                 CALENTAMIENTO_TEXTO, REPETICIONES_TEXTO, () -> contador.tokenizarTodos(textos)));
         List<String> terminos = contador.tokenizarTodos(textos);
+
+        // 3b. Tokenizador con Lucene (version con librerias), sobre los mismos textos
+        ContadorFrecuencias contadorLucene = new ContadorFrecuencias(new TokenizadorLucene());
+        resultados.add(medicion.medir("Preprocesamiento (Lucene)",
+                CALENTAMIENTO_TEXTO, REPETICIONES_TEXTO, () -> contadorLucene.tokenizarTodos(textos)));
+        int terminosDistintosLucene = contadorLucene.contar(textos).size();
 
         // Etapa 4: conteo de frecuencias
         resultados.add(medicion.medir("Conteo de frecuencias",
@@ -140,7 +148,7 @@ public class ServicioMedicion implements CommandLineRunner {
         }
 
         ReporteMedicion reporte = new ReporteMedicion(resultados, terminos.size(), frecuencias.size(),
-                frecuenciaMaxima, coinciden, InformacionEquipo.obtener());
+                terminosDistintosLucene, frecuenciaMaxima, coinciden, InformacionEquipo.obtener());
         imprimir(reporte);
         guardar(reporte, algoritmos, rankings);
         return reporte;
@@ -169,6 +177,7 @@ public class ServicioMedicion implements CommandLineRunner {
         }
         log.info("Terminos totales: {} | Terminos distintos (n): {} | Frecuencia maxima (k): {}",
                 reporte.terminosTotales(), reporte.terminosDistintos(), reporte.frecuenciaMaxima());
+        log.info("Terminos distintos con Lucene: {}", reporte.terminosDistintosLucene());
         log.info("Los 3 algoritmos producen el mismo ranking: {}", reporte.coinciden() ? "SI" : "NO <-- revisar");
         log.info("Equipo: {}", reporte.equipo());
         log.info("Resultados guardados en {}", carpetaResultados.toAbsolutePath().normalize());
@@ -216,6 +225,7 @@ public class ServicioMedicion implements CommandLineRunner {
                 "Java: " + equipo.versionJava(),
                 "Terminos totales: " + reporte.terminosTotales(),
                 "Terminos distintos (n): " + n,
+                "Terminos distintos con Lucene: " + reporte.terminosDistintosLucene(),
                 "Frecuencia maxima (k): " + reporte.frecuenciaMaxima()));
     }
 }
