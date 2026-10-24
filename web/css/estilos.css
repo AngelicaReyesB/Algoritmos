@@ -1,0 +1,135 @@
+/* ===== Variables: colores y medidas usados en todo el sitio ===== */
+:root {
+    --color-fondo: #f6f7f9;
+    --color-superficie: #ffffff;
+    --color-texto: #1f2933;
+    --color-texto-suave: #5f6b7a;
+    --color-borde: #dde2e8;
+    --color-primario: #2459c2;
+    --color-primario-suave: #e8effc;
+    --color-exito: #1e7d4f;
+    --color-error: #b42318;
+
+    --radio: 8px;
+    --espacio: 16px;
+    --ancho-maximo: 1100px;
+    --fuente: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ===== Base ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--fuente);
+    line-height: 1.5;
+    color: var(--color-texto);
+    background: var(--color-fondo);
+}
+
+h1, h2, h3 {
+    line-height: 1.25;
+}
+
+.contenedor {
+    max-width: var(--ancho-maximo);
+    margin: 0 auto;
+    padding: 0 var(--espacio);
+}
+
+/* ===== Encabezado ===== */
+.encabezado {
+    background: var(--color-superficie);
+    border-bottom: 1px solid var(--color-borde);
+    padding: calc(var(--espacio) * 1.5) 0;
+}
+
+.encabezado__materia {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-texto-suave);
+}
+
+.encabezado__titulo {
+    margin: 4px 0 8px;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+}
+
+.estado {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-texto-suave);
+}
+
+.estado--ok {
+    color: var(--color-exito);
+}
+
+.estado--error {
+    color: var(--color-error);
+}
+
+/* ===== Navegacion por pestanas ===== */
+.navegacion {
+    background: var(--color-superficie);
+    border-bottom: 1px solid var(--color-borde);
+    position: sticky;
+    top: 0;
+}
+
+.navegacion__lista {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.pestana {
+    padding: 12px 16px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--color-texto-suave);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.pestana:hover {
+    color: var(--color-texto);
+}
+
+.pestana[aria-selected="true"] {
+    color: var(--color-primario);
+    border-bottom-color: var(--color-primario);
+}
+
+/* ===== Vistas y tarjetas ===== */
+.vista {
+    padding: calc(var(--espacio) * 1.5) 0;
+}
+
+.vista h2 {
+    margin: 0 0 4px;
+}
+
+.descripcion {
+    margin: 0 0 var(--espacio);
+    color: var(--color-texto-suave);
+}
+
+.tarjeta {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: var(--espacio);
+}
+
+/* ===== Pie de pagina ===== */
+.pie {
+    padding: var(--espacio) 0 calc(var(--espacio) * 2);
+    font-size: 0.85rem;
+    color: var(--color-texto-suave);
+}

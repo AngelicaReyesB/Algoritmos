@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking de términos · Análisis de Algoritmos</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script type="module" src="js/app.js"></script>
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor">
+            <p class="encabezado__materia">Análisis de Algoritmos · Universidad del Quindío</p>
+            <h1 class="encabezado__titulo">Ranking de términos con Counting, Radix y Bucket Sort</h1>
+            <p id="estado-api" class="estado">Conectando con la API…</p>
+        </div>
+    </header>
+
+    <nav class="navegacion" aria-label="Secciones">
+        <div class="contenedor navegacion__lista" role="tablist">
+            <button class="pestana" role="tab" data-vista="articulos" aria-selected="true">Artículos</button>
+            <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
+            <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
+        </div>
+    </nav>
+
+    <main class="contenedor">
+        <section id="vista-articulos" class="vista" role="tabpanel">
+            <h2>Artículos del corpus</h2>
+            <p class="descripcion">Los 20 artículos cargados en la base de datos, con su título y abstract.</p>
+            <div id="contenido-articulos" class="tarjeta">Pendiente (FE-02).</div>
+        </section>
+
+        <section id="vista-ranking" class="vista" role="tabpanel" hidden>
+            <h2>Top 15 de términos</h2>
+            <p class="descripcion">Términos más frecuentes ordenados con cada algoritmo.</p>
+            <div id="contenido-ranking" class="tarjeta">Pendiente (FE-03).</div>
+        </section>
+
+        <section id="vista-tiempos" class="vista" role="tabpanel" hidden>
+            <h2>Tiempos de ejecución</h2>
+            <p class="descripcion">Tiempo de cada etapa, medido con System.nanoTime().</p>
+            <div id="contenido-tiempos" class="tarjeta">Pendiente (FE-04).</div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor">Angélica Reyes · Andrés Felipe Zambrano</div>
+    </footer>
+</body>
+</html>
