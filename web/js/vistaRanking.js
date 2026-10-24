@@ -5,7 +5,7 @@
  * cada barra es un <div> cuyo ancho es proporcional a la frecuencia.
  */
 import { obtenerRanking } from "./api.js";
-import { escaparHtml, mostrarError } from "./utilidades.js";
+import { crearGraficoBarras, escaparHtml, mostrarError } from "./utilidades.js";
 
 const contenedor = document.getElementById("contenido-ranking");
 const selectorTop = document.getElementById("selector-top");
@@ -67,20 +67,8 @@ function crearTabla(rankings) {
         </div>`;
 }
 
-/** Grafico de barras horizontales hecho con <div>. */
+/** Grafico de barras con la frecuencia de cada termino. */
 function crearGrafico(ranking) {
-    const maxima = ranking[0].frecuencia; // el primero es el mas frecuente
-    const barras = ranking.map((termino) => {
-        const ancho = (termino.frecuencia / maxima) * 100;
-        return `
-            <div class="barra">
-                <span class="barra__etiqueta">${escaparHtml(termino.termino)}</span>
-                <div class="barra__pista">
-                    <div class="barra__relleno" style="width: ${ancho}%"></div>
-                </div>
-                <span class="barra__valor">${termino.frecuencia}</span>
-            </div>`;
-    }).join("");
-
-    return `<h3>Frecuencia de los términos</h3><div class="grafico">${barras}</div>`;
+    const elementos = ranking.map((t) => ({ etiqueta: t.termino, valor: t.frecuencia }));
+    return `<h3>Frecuencia de los términos</h3>${crearGraficoBarras(elementos)}`;
 }
