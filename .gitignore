@@ -25,3 +25,4 @@ data/pdfs/*.pdf
 # Resultados generados al ejecutar
 results/**/*.csv
 results/**/*.png
+results/**/*.txt

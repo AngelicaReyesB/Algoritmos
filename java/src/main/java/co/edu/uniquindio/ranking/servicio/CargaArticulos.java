@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
+import org.springframework.core.annotation.Order;
 
 /**
  * Al iniciar la aplicacion carga el corpus en la base de datos, en dos pasos:
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
  * justo despues de arrancar.
  */
 @Component
+@Order(1)
 public class CargaArticulos implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(CargaArticulos.class);
@@ -108,7 +110,8 @@ public class CargaArticulos implements CommandLineRunner {
     }
 
     /** Archivos de una carpeta con cierta extension, ordenados por nombre. */
-    private List<Path> listarArchivos(Path carpeta, String extension) throws IOException {
+    /** Archivos de una carpeta con cierta extension, ordenados por nombre. */
+    static List<Path> listarArchivos(Path carpeta, String extension) throws IOException {
         if (!Files.isDirectory(carpeta)) {
             log.warn("No existe la carpeta: {}", carpeta.toAbsolutePath());
             return List.of();
