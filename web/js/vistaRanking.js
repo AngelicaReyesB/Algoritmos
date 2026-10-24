@@ -1,10 +1,12 @@
 /**
  * Vista "Top 15": tabla con el ranking de cada algoritmo y grafico de barras.
  *
- * El grafico se dibuja solo con HTML y CSS (version sin librerias):
- * cada barra es un <div> cuyo ancho es proporcional a la frecuencia.
+ * El grafico se dibuja de dos formas para compararlas:
+ * - Sin librerias: cada barra es un <div> cuyo ancho es proporcional a la frecuencia.
+ * - Con librerias: Chart.js.
  */
 import { obtenerRanking } from "./api.js";
+import { crearContenedorChartJs, dibujarBarrasChartJs } from "./graficosChartJs.js";
 import { crearGraficoBarras, escaparHtml, mostrarError } from "./utilidades.js";
 
 const contenedor = document.getElementById("contenido-ranking");
@@ -14,10 +16,14 @@ export async function cargarRanking() {
     contenedor.innerHTML = "<p>Cargando ranking…</p>";
     try {
         const datos = await obtenerRanking(Number(selectorTop.value));
+        const primerRanking = Object.values(datos.rankings)[0];
+        const elementos = primerRanking.map((t) => ({ etiqueta: t.termino, valor: t.frecuencia }));
         contenedor.innerHTML =
             crearResumen(datos) +
             crearTabla(datos.rankings) +
-            crearGrafico(Object.values(datos.rankings)[0]);
+            crearGrafico(elementos);
+        // Chart.js necesita que el <canvas> ya este en la pagina
+        dibujarBarrasChartJs("grafico-ranking-chartjs", elementos);
     } catch (error) {
         mostrarError(contenedor, error);
     }
@@ -67,8 +73,18 @@ function crearTabla(rankings) {
         </div>`;
 }
 
-/** Grafico de barras con la frecuencia de cada termino. */
-function crearGrafico(ranking) {
-    const elementos = ranking.map((t) => ({ etiqueta: t.termino, valor: t.frecuencia }));
-    return `<h3>Frecuencia de los términos</h3>${crearGraficoBarras(elementos)}`;
+/** Los dos graficos de frecuencia, uno al lado del otro. */
+function crearGrafico(elementos) {
+    return `
+        <h3>Frecuencia de los términos</h3>
+        <div class="comparacion-graficos">
+            <div>
+                <h4>Sin librerías (HTML y CSS)</h4>
+                ${crearGraficoBarras(elementos)}
+            </div>
+            <div>
+                <h4>Con librerías (Chart.js)</h4>
+                ${crearContenedorChartJs("grafico-ranking-chartjs", elementos.length)}
+            </div>
+        </div>`;
 }

@@ -5,6 +5,7 @@
  * por eso no se ejecuta al abrir la pagina sino al presionar el boton.
  */
 import { obtenerTiempos } from "./api.js";
+import { crearContenedorChartJs, dibujarBarrasChartJs } from "./graficosChartJs.js";
 import { crearGraficoBarras, escaparHtml, mostrarError } from "./utilidades.js";
 
 const contenedor = document.getElementById("contenido-tiempos");
@@ -23,11 +24,15 @@ export async function medirTiempos() {
     contenedor.innerHTML = "<p>Ejecutando la medición en el servidor. Tarda unos segundos…</p>";
     try {
         const reporte = await obtenerTiempos();
+        const elementos = reporte.resultados
+            .filter((r) => ALGORITMOS.includes(r.etapa))
+            .map((r) => ({ etiqueta: r.etapa, valor: r.mediaMs }));
         contenedor.innerHTML =
             crearResumen(reporte) +
             crearTabla(reporte.resultados) +
-            crearGraficoAlgoritmos(reporte.resultados) +
+            crearGraficoAlgoritmos(elementos) +
             crearEquipo(reporte.equipo);
+        dibujarBarrasChartJs("grafico-tiempos-chartjs", elementos, formatearMs);
     } catch (error) {
         mostrarError(contenedor, error);
     } finally {
@@ -48,7 +53,7 @@ function crearResumen(reporte) {
         <div class="resumen">
             <p>Términos totales: <strong>${reporte.terminosTotales}</strong></p>
             <p>Términos distintos (n): <strong>${reporte.terminosDistintos}</strong></p>
-            <p>Términos distintos con Lucene: <strong>${reporte.terminosDistintosLucene}</strong></p>            
+            <p>Términos distintos con Lucene: <strong>${reporte.terminosDistintosLucene}</strong></p>
             <p>Frecuencia máxima (k): <strong>${reporte.frecuenciaMaxima}</strong></p>
             ${validacion}
         </div>
@@ -88,14 +93,22 @@ function crearTabla(resultados) {
 }
 
 /**
- * Grafico solo con los tres algoritmos. Si se incluyera la extraccion de PDF
+ * Graficos solo con los tres algoritmos. Si se incluyera la extraccion de PDF
  * (cientos de ms), las barras de los algoritmos serian invisibles.
  */
-function crearGraficoAlgoritmos(resultados) {
-    const elementos = resultados
-        .filter((r) => ALGORITMOS.includes(r.etapa))
-        .map((r) => ({ etiqueta: r.etapa, valor: r.mediaMs }));
-    return `<h3>Algoritmos de ordenamiento (media en ms)</h3>${crearGraficoBarras(elementos, formatearMs)}`;
+function crearGraficoAlgoritmos(elementos) {
+    return `
+        <h3>Algoritmos de ordenamiento (media en ms)</h3>
+        <div class="comparacion-graficos">
+            <div>
+                <h4>Sin librerías (HTML y CSS)</h4>
+                ${crearGraficoBarras(elementos, formatearMs)}
+            </div>
+            <div>
+                <h4>Con librerías (Chart.js)</h4>
+                ${crearContenedorChartJs("grafico-tiempos-chartjs", elementos.length)}
+            </div>
+        </div>`;
 }
 
 /** Caracteristicas del equipo donde se midio. */
