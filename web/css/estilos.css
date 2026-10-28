@@ -41,9 +41,36 @@ h1, h2, h3 {
 
 /* ===== Encabezado ===== */
 .encabezado {
+    position: relative;
     background: var(--color-superficie);
     border-bottom: 1px solid var(--color-borde);
     padding: calc(var(--espacio) * 1.5) 0;
+}
+
+.encabezado__logos {
+    position: absolute;
+    left: calc(var(--espacio) * 1.5);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--espacio);
+}
+
+.encabezado__logo {
+    height: 64px;
+    width: auto;
+}
+
+/* Pantallas angostas: los logos van arriba del titulo para no taparlo */
+@media (max-width: 1500px) {
+    .encabezado__logos {
+        position: static;
+        transform: none;
+        max-width: var(--ancho-maximo);
+        margin: 0 auto var(--espacio);
+        padding: 0 var(--espacio);
+    }
 }
 
 .encabezado__materia {
