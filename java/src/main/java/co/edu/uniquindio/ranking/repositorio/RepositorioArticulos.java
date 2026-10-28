@@ -41,9 +41,12 @@ public class RepositorioArticulos {
                 articulo.resumen(), articulo.manual());
     }
 
-    /** Todos los articulos, ordenados por nombre de archivo. */
+    /**
+     * Todos los articulos, en el orden en que se cargaron (1, 2, 3, ..., 20).
+     * Se ordena por id y no por archivo: por archivo el orden seria 1, 10, 11, ..., 2.
+     */
     public List<Articulo> listar() {
-        String sql = "SELECT id, archivo, titulo, autores, resumen, manual FROM articulos ORDER BY archivo";
+        String sql = "SELECT id, archivo, titulo, autores, resumen, manual FROM articulos ORDER BY id";
         return jdbc.query(sql, (fila, numeroFila) -> new Articulo(
                 fila.getInt("id"),
                 fila.getString("archivo"),
@@ -55,6 +58,11 @@ public class RepositorioArticulos {
 
     /** Solo los abstracts, en el mismo orden. Es lo que necesita el conteo de frecuencias. */
     public List<String> listarResumenes() {
-        return jdbc.queryForList("SELECT resumen FROM articulos ORDER BY archivo", String.class);
+        return jdbc.queryForList("SELECT resumen FROM articulos ORDER BY id", String.class);
+    }
+
+    /** Borra todos los articulos. El corpus se vuelve a cargar desde los PDF al iniciar. */
+    public void borrarTodos() {
+        jdbc.update("DELETE FROM articulos");
     }
 }

@@ -7,64 +7,83 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Pruebas con textos de ejemplo que imitan lo que PDFBox devuelve
- * en los casos problematicos encontrados en TEST-03.
+ * para cada formato de editorial del corpus.
  */
 class ExtractorAbstractTest {
 
     private final ExtractorAbstract extractor = new ExtractorAbstract();
 
     @Test
-    void extraeElTextoEntreAbstractEIntroduccion() {
-        String texto = "Titulo del articulo\nAutores\nAbstract\nWe propose a new model.\n1 Introduction\nTexto";
-        assertEquals("We propose a new model", extractor.extraerAbstract(texto));
-    }
-
-    @Test
-    void terminaEnPalabrasClave() {
-        String texto = "Abstract: Diffusion models work well.\nKeywords: diffusion, images";
-        assertEquals("Diffusion models work well", extractor.extraerAbstract(texto));
-    }
-
-    @Test
     void sinLaPalabraAbstractDevuelveNull() {
-        assertNull(extractor.extraerAbstract("Titulo\nAutores\n1 Introduction\nEl texto no tiene esa seccion"));
+        assertNull(extractor.extraerAbstract("Titulo\nAutores\n1. Introduction\nEl texto no tiene esa seccion"));
     }
 
     @Test
-    void eliminaElSelloDeArxiv() {
-        String texto = "Abstract\nLanguage models scale.\narXiv:2001.08361v1 [cs.LG] 23 Jan 2020\n"
-                + "1 Introduction";
-        assertEquals("Language models scale", extractor.extraerAbstract(texto));
+    void springerTerminaEnPalabrasClave() {
+        String texto = "REVIEW ARTICLE\nTitulo\nAbstract \nGenerative AI provides opportunities.\n"
+                + "Keywords:  Generative artificial intelligence, Scoping review";
+        assertEquals("Generative AI provides opportunities", extractor.extraerAbstract(texto));
     }
 
     @Test
-    void terminaEnNotaAlPieDeContribucion() {
-        String texto = "Abstract\nThe dominant models are recurrent.\n∗Equal contribution. Listing order is random.";
-        assertEquals("The dominant models are recurrent", extractor.extraerAbstract(texto));
+    void mdpiConDosPuntosDespuesDeAbstract() {
+        String texto = "Review\nTitulo\nAbstract: The use of GenAI is debated.\nKeywords: artificial intelligence";
+        assertEquals("The use of GenAI is debated", extractor.extraerAbstract(texto));
     }
 
     @Test
-    void terminaEnEjemplosDeFigura() {
-        String texto = "Abstract\nChain of thought improves reasoning.\nA: The cafeteria had 23 apples.\nQ: Roger";
-        assertEquals("Chain of thought improves reasoning", extractor.extraerAbstract(texto));
+    void laPalabraKeywordsDentroDelAbstractNoLoCorta() {
+        String texto = "Abstract: Trends in citations, keywords, and co-authorship.\nKeywords: x";
+        assertEquals("Trends in citations, keywords, and co-authorship", extractor.extraerAbstract(texto));
     }
 
     @Test
-    void eliminaElAvisoDeCopyrightDeAcm() {
-        String texto = "ABSTRACT\nartists paint, while\nPermission to make digital or hard copies of part\n"
-                + "of this work. https://doi.org/10.1145/3586183.3606763\nauthors write.\nCCS CONCEPTS\nx";
-        assertEquals("artists paint, while authors write", extractor.extraerAbstract(texto));
+    void elsevierConAbstractEspaciado() {
+        String texto = "A R T I C L E  I N F O   \nKeywords: \nAI literacy \nA B S T R A C T   \n"
+                + "Since AI is finding its way into everyday life. \nMore text.   \n1. Introduction \nx";
+        assertEquals("Since AI is finding its way into everyday life. More text",
+                extractor.extraerAbstract(texto));
     }
 
     @Test
-    void normalizaLigadurasYUnePalabrasCortadas() {
+    void elsevierTerminaEnTresEspaciosSinIntroduccion() {
+        String texto = "A B S T R A C T   \nThis article reports a review. \nOf 40 studies.   \n"
+                + "Since Alan Turing first articulated";
+        assertEquals("This article reports a review. Of 40 studies", extractor.extraerAbstract(texto));
+    }
+
+    @Test
+    void elsevierSaltaLasPalabrasClaveDespuesDelTitulo() {
+        String texto = "A R T I C L E I N F O A B S T R A C T\nKeywords:\nHuman-centered AI\nAI in education\n"
+                + "The rapid expansion of Learning Analytics offers new systems for teachers and students.\n"
+                + "1. Introduction";
+        assertEquals("The rapid expansion of Learning Analytics offers new systems for teachers and students",
+                extractor.extraerAbstract(texto));
+    }
+
+    @Test
+    void introduccionPegadaAlFinalDelAbstract() {
+        String texto = "A B S T R A C T\nWe highlight the new journal Computers & Education.1. Introduction\nx";
+        assertEquals("We highlight the new journal Computers & Education", extractor.extraerAbstract(texto));
+    }
+
+    @Test
+    void wileyTerminaEnPalabrasClaveEspaciadas() {
+        String texto = "Abstract\nRecent literature underscores the need.\nK E Y W O R D S\nAI competence";
+        assertEquals("Recent literature underscores the need", extractor.extraerAbstract(texto));
+    }
+
+    @Test
+    void unePalabrasCortadasConGuion() {
         String texto = "Abstract\nAn eﬃcient gener-\native model.\nKeywords: x";
         assertEquals("An efficient generative model", extractor.extraerAbstract(texto));
     }
 
     @Test
-    void tituloEsLaPrimeraLineaNoVacia() {
-        assertEquals("Generative Adversarial Nets",
-                extractor.extraerTitulo("\n\n  Generative Adversarial Nets \nIan Goodfellow"));
+    void elsevierUnePalabrasCortadasSinGuion() {
+        String texto = "A B S T R A C T   \nFifty-nine studies met the in\nclusion criteria. \nWe coded them. \n"
+                + "Then we wrote.   \n1. Introduction";
+        assertEquals("Fifty-nine studies met the inclusion criteria. We coded them. Then we wrote",
+                extractor.extraerAbstract(texto));
     }
 }

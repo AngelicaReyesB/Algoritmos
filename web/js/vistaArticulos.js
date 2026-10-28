@@ -45,7 +45,8 @@ function crearArticulo(articulo) {
                 <h3 class="articulo__archivo">${escaparHtml(articulo.archivo)}</h3>
                 ${insignia}
             </div>
-            <p class="articulo__titulo">Título extraído: ${escaparHtml(articulo.titulo || "(sin título)")}</p>
+            <p class="articulo__titulo">Título: ${escaparHtml(articulo.titulo || "(sin título)")}</p>
+            <p class="articulo__titulo">Autores: ${escaparHtml(articulo.autores || "(sin autores)")}</p>
             <details>
                 <summary>Ver abstract (${contarPalabras(articulo.resumen)} palabras)</summary>
                 <p class="articulo__resumen">${escaparHtml(articulo.resumen)}</p>
