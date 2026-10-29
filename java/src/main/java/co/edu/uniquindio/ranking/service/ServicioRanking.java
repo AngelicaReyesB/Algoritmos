@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.servicio;
+package co.edu.uniquindio.ranking.service;
 
 import co.edu.uniquindio.ranking.algoritmos.AlgoritmoOrdenamiento;
 import co.edu.uniquindio.ranking.algoritmos.BucketSort;
@@ -6,7 +6,7 @@ import co.edu.uniquindio.ranking.algoritmos.CountingSort;
 import co.edu.uniquindio.ranking.algoritmos.RadixSort;
 import co.edu.uniquindio.ranking.modelo.ComparacionRanking;
 import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
-import co.edu.uniquindio.ranking.repositorio.RepositorioArticulos;
+import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import co.edu.uniquindio.ranking.texto.ContadorFrecuencias;
 import co.edu.uniquindio.ranking.texto.TokenizadorPropio;
 import org.springframework.stereotype.Service;

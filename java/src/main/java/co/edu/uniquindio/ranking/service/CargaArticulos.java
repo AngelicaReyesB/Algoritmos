@@ -1,9 +1,9 @@
-package co.edu.uniquindio.ranking.servicio;
+package co.edu.uniquindio.ranking.service;
 
 import co.edu.uniquindio.ranking.modelo.Articulo;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
-import co.edu.uniquindio.ranking.repositorio.RepositorioArticulos;
+import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

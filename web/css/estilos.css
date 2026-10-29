@@ -389,3 +389,50 @@ h1, h2, h3 {
     position: relative; /* Chart.js lo necesita para ajustar el tamano del canvas */
     width: 100%;
 }
+
+/* ===== Vista de similitud ===== */
+.tarjeta--separada {
+    margin-top: var(--espacio);
+}
+
+.seleccion__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.boton--secundario {
+    background: var(--color-primario-suave);
+    color: var(--color-primario);
+}
+
+.seleccion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 6px 16px;
+}
+
+.seleccion__opcion {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.seleccion__opcion input {
+    margin-top: 4px;
+}
+
+.leyenda-articulos {
+    margin: 0 0 var(--espacio);
+    padding-left: 0;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+.matriz-similitud th,
+.matriz-similitud td {
+    text-align: center;
+    min-width: 56px;
+}
