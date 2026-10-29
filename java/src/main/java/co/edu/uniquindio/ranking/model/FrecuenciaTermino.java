@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.modelo;
+package co.edu.uniquindio.ranking.model;
 
 /**
  * Un termino del corpus y la cantidad de veces que aparece.
