@@ -49,3 +49,7 @@ export function obtenerTiempos() {
 export function compararSimilitud(ids) {
     return enviarJson("/api/similitud", { ids });
 }
+
+export function obtenerAgrupamiento(similitud = "tfidf") {
+    return obtenerJson(`/api/agrupamiento?similitud=${encodeURIComponent(similitud)}`);
+}
