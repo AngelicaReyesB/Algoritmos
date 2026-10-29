@@ -19,6 +19,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<jmh.version>1.37</jmh.version>
+		<langchain4j.version>1.22.0-beta32</langchain4j.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,13 @@
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
 			<version>9.12.0</version>
+		</dependency>
+
+		<!-- Modelo all-MiniLM-L6-v2 que corre local (ONNX): no necesita internet ni clave -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
+			<version>${langchain4j.version}</version>
 		</dependency>
 
 		<!-- Pruebas: incluye JUnit 5 -->
