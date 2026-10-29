@@ -1,8 +1,8 @@
-package co.edu.uniquindio.ranking.servicio;
+package co.edu.uniquindio.ranking.service;
 
 import co.edu.uniquindio.ranking.modelo.ComparacionRanking;
 import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
-import co.edu.uniquindio.ranking.repositorio.RepositorioArticulos;
+import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

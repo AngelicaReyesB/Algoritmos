@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.servicio;
+package co.edu.uniquindio.ranking.service;
 
 import co.edu.uniquindio.ranking.algoritmos.AlgoritmoOrdenamiento;
 import co.edu.uniquindio.ranking.algoritmos.BucketSort;
@@ -11,7 +11,7 @@ import co.edu.uniquindio.ranking.medicion.ResultadoMedicion;
 import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
-import co.edu.uniquindio.ranking.repositorio.RepositorioArticulos;
+import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import co.edu.uniquindio.ranking.texto.ContadorFrecuencias;
 import co.edu.uniquindio.ranking.texto.TokenizadorLucene;
 import co.edu.uniquindio.ranking.texto.TokenizadorPropio;

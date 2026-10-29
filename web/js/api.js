@@ -17,6 +17,23 @@ export async function obtenerJson(url) {
     return datos;
 }
 
+/**
+ * Hace una peticion POST enviando "cuerpo" como JSON y devuelve la respuesta.
+ * Maneja los errores igual que obtenerJson.
+ */
+export async function enviarJson(url, cuerpo) {
+    const respuesta = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cuerpo),
+    });
+    const datos = await respuesta.json();
+    if (!respuesta.ok) {
+        throw new Error(datos.message || `Error ${respuesta.status}`);
+    }
+    return datos;
+}
+
 export function obtenerArticulos() {
     return obtenerJson("/api/articulos");
 }
@@ -27,4 +44,8 @@ export function obtenerRanking(top = 15) {
 
 export function obtenerTiempos() {
     return obtenerJson("/api/tiempos");
+}
+
+export function compararSimilitud(ids) {
+    return enviarJson("/api/similitud", { ids });
 }

@@ -32,6 +32,7 @@
             <button class="pestana" role="tab" data-vista="articulos" aria-selected="true">Artículos</button>
             <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
             <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
+            <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud</button>
         </div>
     </nav>
 
@@ -63,6 +64,24 @@
             <button id="boton-medir" class="boton" type="button">Medir tiempos</button>
             <div id="contenido-tiempos" class="tarjeta">
                 Presiona "Medir tiempos" para ejecutar la medición. Tarda unos segundos.
+            </div>
+        </section>
+
+        <section id="vista-similitud" class="vista" role="tabpanel" hidden>
+            <h2>Similitud textual</h2>
+            <p class="descripcion">
+                Elija 2 o más artículos y compare sus abstracts con 6 algoritmos: 4 clásicos
+                (Levenshtein, Needleman-Wunsch, coseno con TF-IDF y Jaccard) y 2 con IA (FastText y MiniLM).
+            </p>
+            <div class="tarjeta">
+                <div class="seleccion__acciones">
+                    <button id="boton-seleccionar-todos" class="boton boton--secundario" type="button">Seleccionar todos</button>
+                    <button id="boton-comparar" class="boton" type="button">Comparar seleccionados</button>
+                </div>
+                <div id="seleccion-articulos" class="seleccion">Cargando…</div>
+            </div>
+            <div id="contenido-similitud" class="tarjeta tarjeta--separada">
+                Seleccione los artículos y presione "Comparar seleccionados".
             </div>
         </section>
     </main>
