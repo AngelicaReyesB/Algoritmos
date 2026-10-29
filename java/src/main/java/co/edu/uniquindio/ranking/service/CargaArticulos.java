@@ -1,6 +1,6 @@
 package co.edu.uniquindio.ranking.service;
 
-import co.edu.uniquindio.ranking.modelo.Articulo;
+import co.edu.uniquindio.ranking.model.Articulo;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
 import co.edu.uniquindio.ranking.repository.RepositorioArticulos;

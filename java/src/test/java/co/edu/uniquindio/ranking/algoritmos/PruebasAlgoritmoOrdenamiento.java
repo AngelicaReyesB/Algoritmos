@@ -1,6 +1,6 @@
 package co.edu.uniquindio.ranking.algoritmos;
 
-import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
+import co.edu.uniquindio.ranking.model.FrecuenciaTermino;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

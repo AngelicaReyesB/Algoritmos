@@ -1,7 +1,7 @@
 package co.edu.uniquindio.ranking.controller;
 
-import co.edu.uniquindio.ranking.modelo.ComparacionSimilitud;
-import co.edu.uniquindio.ranking.modelo.SolicitudSimilitud;
+import co.edu.uniquindio.ranking.model.ComparacionSimilitud;
+import co.edu.uniquindio.ranking.model.SolicitudSimilitud;
 import co.edu.uniquindio.ranking.service.ServicioSimilitud;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

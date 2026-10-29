@@ -3,7 +3,7 @@ package co.edu.uniquindio.ranking.medicion;
 import co.edu.uniquindio.ranking.algoritmos.BucketSort;
 import co.edu.uniquindio.ranking.algoritmos.CountingSort;
 import co.edu.uniquindio.ranking.algoritmos.RadixSort;
-import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
+import co.edu.uniquindio.ranking.model.FrecuenciaTermino;
 import co.edu.uniquindio.ranking.texto.ContadorFrecuencias;
 import co.edu.uniquindio.ranking.texto.TokenizadorLucene;
 import co.edu.uniquindio.ranking.texto.TokenizadorPropio;

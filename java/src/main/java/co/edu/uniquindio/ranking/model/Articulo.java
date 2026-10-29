@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.modelo;
+package co.edu.uniquindio.ranking.model;
 
 /**
  * Un articulo del corpus, tal como se guarda en la tabla "articulos".

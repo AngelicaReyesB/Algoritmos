@@ -8,7 +8,7 @@ import co.edu.uniquindio.ranking.medicion.InformacionEquipo;
 import co.edu.uniquindio.ranking.medicion.MedicionManual;
 import co.edu.uniquindio.ranking.medicion.ReporteMedicion;
 import co.edu.uniquindio.ranking.medicion.ResultadoMedicion;
-import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
+import co.edu.uniquindio.ranking.model.FrecuenciaTermino;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
 import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
