@@ -5,23 +5,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
- * Pruebas propias de Boyer-Moore: sus dos tablas.
+ * Pruebas de Boyer-Moore.
  *
- * La busqueda en si (varias ocurrencias, solapadas, sin coincidencia, vacios,
- * mayusculas, tildes...) la prueban las pruebas comunes de PruebasAlgoritmoBusqueda.
- * Para heredarlas, esta clase debe declararse "extends PruebasAlgoritmoBusqueda".
+ * Hereda las pruebas comunes de PruebasAlgoritmoBusqueda (inicio, final, varias
+ * ocurrencias, solapadas, vacios, mayusculas, comparacion con fuerza bruta...) y
+ * agrega las propias: sus dos tablas.
  *
  * Los valores esperados de la tabla del sufijo bueno se contrastaron con la
  * construccion clasica lineal de Boyer-Moore en 3.138 patrones.
  */
-class BoyerMooreTest {
+class BoyerMooreTest extends PruebasAlgoritmoBusqueda {
 
     private final BoyerMoore boyerMoore = new BoyerMoore();
+
+    @Override
+    protected AlgoritmoBusqueda crearAlgoritmo() {
+        return boyerMoore;
+    }
 
     // ---------- Tabla del caracter malo (ultima posicion de cada caracter) ----------
 
@@ -79,12 +83,5 @@ class BoyerMooreTest {
     void rechazaEntradasNulas() {
         assertThrows(IllegalArgumentException.class, () -> boyerMoore.buscar(null, "a"));
         assertThrows(IllegalArgumentException.class, () -> boyerMoore.buscar("a", null));
-    }
-
-    // ---------- Un caso de busqueda completo, como comprobacion rapida ----------
-
-    @Test
-    void buscaElPatronDelCasoDeEstudio() {
-        assertEquals(List.of(2), boyerMoore.buscar("abababca", "ababca"));
     }
 }

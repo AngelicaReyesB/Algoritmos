@@ -30,7 +30,11 @@ import java.util.Map;
  * La busqueda es exacta (distingue mayusculas y minusculas) y devuelve las
  * posiciones (empezando en 0) de todas las ocurrencias, incluidas las solapadas.
  */
-public class BoyerMoore {
+public class BoyerMoore implements AlgoritmoBusqueda {
+
+    public String getNombre() {
+        return "Boyer-Moore";
+    }
 
     /**
      * Tabla del caracter malo: para cada caracter del patron, la posicion (desde 0)
@@ -104,6 +108,7 @@ public class BoyerMoore {
      * @return posiciones (desde 0) donde empieza cada ocurrencia; lista vacia si
      *         no hay ninguna, si el patron esta vacio o si es mas largo que el texto
      */
+    @Override
     public List<Integer> buscar(String texto, String patron) {
         if (texto == null || patron == null) {
             throw new IllegalArgumentException("El texto y el patron no pueden ser nulos");
