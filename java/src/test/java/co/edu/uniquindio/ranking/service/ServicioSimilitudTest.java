@@ -1,8 +1,8 @@
 package co.edu.uniquindio.ranking.service;
 
-import co.edu.uniquindio.ranking.modelo.Articulo;
-import co.edu.uniquindio.ranking.modelo.ComparacionSimilitud;
-import co.edu.uniquindio.ranking.modelo.ResultadoSimilitud;
+import co.edu.uniquindio.ranking.model.Articulo;
+import co.edu.uniquindio.ranking.model.ComparacionSimilitud;
+import co.edu.uniquindio.ranking.model.ResultadoSimilitud;
 import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;

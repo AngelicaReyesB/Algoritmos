@@ -1,6 +1,6 @@
 package co.edu.uniquindio.ranking.repository;
 
-import co.edu.uniquindio.ranking.modelo.Articulo;
+import co.edu.uniquindio.ranking.model.Articulo;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

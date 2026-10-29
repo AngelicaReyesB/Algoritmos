@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.modelo;
+package co.edu.uniquindio.ranking.model;
 
 import java.util.List;
 import java.util.Map;

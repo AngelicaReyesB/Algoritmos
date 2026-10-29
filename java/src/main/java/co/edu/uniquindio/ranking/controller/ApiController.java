@@ -1,8 +1,8 @@
 package co.edu.uniquindio.ranking.controller;
 
 import co.edu.uniquindio.ranking.medicion.ReporteMedicion;
-import co.edu.uniquindio.ranking.modelo.Articulo;
-import co.edu.uniquindio.ranking.modelo.ComparacionRanking;
+import co.edu.uniquindio.ranking.model.Articulo;
+import co.edu.uniquindio.ranking.model.ComparacionRanking;
 import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import co.edu.uniquindio.ranking.service.ServicioMedicion;
 import co.edu.uniquindio.ranking.service.ServicioRanking;

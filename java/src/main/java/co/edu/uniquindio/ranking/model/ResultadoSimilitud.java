@@ -1,4 +1,4 @@
-package co.edu.uniquindio.ranking.modelo;
+package co.edu.uniquindio.ranking.model;
 
 /**
  * Resultado de UN algoritmo de similitud sobre los articulos elegidos.

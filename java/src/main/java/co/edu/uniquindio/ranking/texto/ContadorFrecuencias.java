@@ -1,6 +1,6 @@
 package co.edu.uniquindio.ranking.texto;
 
-import co.edu.uniquindio.ranking.modelo.FrecuenciaTermino;
+import co.edu.uniquindio.ranking.model.FrecuenciaTermino;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
