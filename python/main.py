@@ -14,6 +14,7 @@ from src.medicion import medir_todo
 RAIZ = Path(__file__).resolve().parent.parent  # raiz del repositorio
 CARPETA_PDFS = RAIZ / "data" / "pdfs"
 CARPETA_ABSTRACTS = RAIZ / "data" / "abstracts"
+ARCHIVO_METADATOS = RAIZ / "data" / "metadatos.json"
 CARPETA_RESULTADOS = RAIZ / "results" / "python"
 
 
@@ -23,7 +24,7 @@ def main() -> None:
     argumentos = parser.parse_args()
 
     if argumentos.comando == "extraer":
-        extraer_corpus(CARPETA_PDFS, CARPETA_ABSTRACTS)
+        extraer_corpus(CARPETA_PDFS, CARPETA_ABSTRACTS, ARCHIVO_METADATOS)
     else:
         coinciden = medir_todo(CARPETA_PDFS, CARPETA_ABSTRACTS, CARPETA_RESULTADOS)
         if not coinciden:

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Callable, Dict, List
 
 from .algoritmos import ALGORITMOS, Par
-from .extraccion import cargar_abstracts, extraer_abstract, leer_primeras_paginas
+from .extraccion import cargar_abstracts, extraer_abstract, leer_primeras_paginas, listar_archivos
 from .texto import contar_terminos, tokenizar_todos
 
 # Calentamiento y repeticiones por etapa (iguales a la version Java)
@@ -73,7 +73,7 @@ def medir_todo(carpeta_pdfs: Path, carpeta_abstracts: Path, carpeta_resultados: 
     resultados: List[ResultadoMedicion] = []
 
     # Etapa 1: extraccion de los PDF con PyMuPDF (se omite si no hay PDF)
-    pdfs = sorted(carpeta_pdfs.glob("*.pdf"))
+    pdfs = listar_archivos(carpeta_pdfs, "*.pdf")
     if pdfs:
         resultados.append(medir("Extraccion PDF (PyMuPDF)", CALENTAMIENTO_PDF, REPETICIONES_PDF,
                                 lambda: _extraer_todos(pdfs)))
