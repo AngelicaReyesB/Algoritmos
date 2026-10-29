@@ -29,6 +29,23 @@ docs/            Informe y diagramas
 
 ## Ejecución
 
+## Paquetes del backend (java/src/main/java/co/edu/uniquindio/ranking)
+
+| Paquete | Contenido |
+| --- | --- |
+| `modelo` | Records de datos (Articulo, FrecuenciaTermino, ...) |
+| `pdf` | Lectura de PDF (PDFBox) y extraccion del abstract |
+| `texto` | Tokenizadores, palabras vacias y conteo de frecuencias |
+| `algoritmos` | Counting, Radix y Bucket Sort (seguimiento) |
+| `busqueda` | KMP, Boyer-Moore y Rabin-Karp (Requerimiento 3) |
+| `similitud` | Levenshtein, Needleman-Wunsch, coseno TF-IDF y Jaccard (Requerimiento 1) |
+| `embeddings` | GloVe y MiniLM (Requerimiento 1, enfoques de IA) |
+| `agrupamiento` | Single, Complete y Average linkage y correlacion cofenetica (Requerimiento 2) |
+| `medicion` | Medicion de tiempos |
+| `repositorio` | Acceso a PostgreSQL |
+| `servicio` | Carga del corpus, ranking y medicion |
+| `controlador` | API REST |
+
 ### Versión Python
 
 ```bash
