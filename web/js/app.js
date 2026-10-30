@@ -7,8 +7,8 @@ import { obtenerRanking } from "./api.js";
 import { cargarArticulos } from "./vistaArticulos.js";
 import { cargarRanking } from "./vistaRanking.js";
 import { medirTiempos } from "./vistaTiempos.js";
+import { buscar } from "./vistaBusqueda.js";
 import { cargarSeleccionArticulos, compararSeleccionados, seleccionarTodos } from "./vistaSimilitud.js";
-import { agrupar } from "./vistaAgrupamiento.js";
 
 const pestanas = document.querySelectorAll(".pestana");
 const vistas = document.querySelectorAll(".vista");
@@ -45,9 +45,12 @@ pestanas.forEach((pestana) => {
 
 document.getElementById("selector-top").addEventListener("change", cargarRanking);
 document.getElementById("boton-medir").addEventListener("click", medirTiempos);
+document.getElementById("formulario-busqueda").addEventListener("submit", (evento) => {
+    evento.preventDefault(); // sin esto el formulario recargaria la pagina
+    buscar();
+});
 document.getElementById("boton-seleccionar-todos").addEventListener("click", seleccionarTodos);
 document.getElementById("boton-comparar").addEventListener("click", compararSeleccionados);
-document.getElementById("boton-agrupar").addEventListener("click", agrupar);
 
 verificarApi();
 cargarArticulos();

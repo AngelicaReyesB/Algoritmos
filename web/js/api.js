@@ -53,3 +53,7 @@ export function compararSimilitud(ids) {
 export function obtenerAgrupamiento(similitud = "tfidf") {
     return obtenerJson(`/api/agrupamiento?similitud=${encodeURIComponent(similitud)}`);
 }
+
+export function buscarPatron(patron) {
+    return obtenerJson(`/api/busqueda?patron=${encodeURIComponent(patron)}`);
+}

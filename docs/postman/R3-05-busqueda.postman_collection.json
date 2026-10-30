@@ -1,0 +1,346 @@
+{
+  "info": {
+    "name": "R3-05 Busqueda",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "R3-05 Busqueda: patron presente (model)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
+              "pm.test('Hay ocurrencias', () => pm.expect(r.totalOcurrencias).to.be.above(0));",
+              "pm.test('Cada articulo: los 3 algoritmos cuentan lo mismo', () => r.articulos.forEach(a => { pm.expect(a.ocurrencias['KMP']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Boyer-Moore']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Rabin-Karp']).to.eql(a.posiciones.length); }));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=model",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "model"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: patron ausente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
+              "pm.test('Sin ocurrencias', () => pm.expect(r.totalOcurrencias).to.eql(0));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=zqxjk",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "zqxjk"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: distingue mayusculas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
+              "pm.test('Sin ocurrencias', () => pm.expect(r.totalOcurrencias).to.eql(0));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=MODEL%20ZZ",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "MODEL%20ZZ"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: caracteres especiales",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=%3Cscript%3E%26%22",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "%3Cscript%3E%26%22"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: un espacio es valido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
+              "pm.test('La longitud es 1', () => pm.expect(r.longitudPatron).to.eql(1));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=%20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "%20"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: 100 caracteres es valido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+              "const r = pm.response.json();",
+              "pm.test('Los 3 algoritmos coinciden', () => pm.expect(r.coinciden).to.eql(true));",
+              "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
+              "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
+              "pm.test('La longitud es 100', () => pm.expect(r.longitudPatron).to.eql(100));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: patron vacio -> 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+              "pm.test('Mensaje claro', () => pm.expect(pm.response.json().message).to.include('vacio'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: 101 caracteres -> 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+              "pm.test('Mensaje indica el limite', () => pm.expect(pm.response.json().message).to.include('100'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda?patron=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ],
+          "query": [
+            {
+              "key": "patron",
+              "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "R3-05 Busqueda: sin el parametro patron -> 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/busqueda",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "busqueda"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -32,8 +32,8 @@
             <button class="pestana" role="tab" data-vista="articulos" aria-selected="true">Artículos</button>
             <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
             <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
+            <button class="pestana" role="tab" data-vista="busqueda" aria-selected="false">Búsqueda</button>
             <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud</button>
-            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento</button>
         </div>
     </nav>
 
@@ -68,6 +68,21 @@
             </div>
         </section>
 
+        <section id="vista-busqueda" class="vista" role="tabpanel" hidden>
+            <h2>Búsqueda de un patrón</h2>
+            <p class="descripcion">
+                Busca un texto exacto en los 20 abstracts con KMP, Boyer-Moore y Rabin-Karp.
+                Distingue mayúsculas de minúsculas y acepta hasta 100 caracteres.
+                Las ocurrencias que se solapan (como "aa" en "aaaa") se cuentan todas, pero se resaltan juntas.
+            </p>
+            <form id="formulario-busqueda" class="formulario-busqueda">
+                <input id="campo-patron" type="text" maxlength="100" autocomplete="off"
+                       placeholder="Por ejemplo: model" aria-label="Patrón a buscar">
+                <button id="boton-buscar" class="boton" type="submit">Buscar</button>
+            </form>
+            <div id="contenido-busqueda" class="tarjeta">Escriba un patrón y presione "Buscar".</div>
+        </section>
+
         <section id="vista-similitud" class="vista" role="tabpanel" hidden>
             <h2>Similitud textual</h2>
             <p class="descripcion">
@@ -83,25 +98,6 @@
             </div>
             <div id="contenido-similitud" class="tarjeta tarjeta--separada">
                 Seleccione los artículos y presione "Comparar seleccionados".
-            </div>
-        </section>
-
-        <section id="vista-agrupamiento" class="vista" role="tabpanel" hidden>
-            <h2>Agrupamiento jerárquico</h2>
-            <p class="descripcion">
-                Agrupa los 20 abstracts con 3 criterios (Single, Complete y Average linkage) y dibuja un
-                dendrograma para cada uno. La correlación cofenética indica cuál agrupa de forma más coherente.
-            </p>
-            <label class="control">
-                Similitud para calcular la distancia:
-                <select id="selector-similitud">
-                    <option value="tfidf" selected>Coseno con TF-IDF</option>
-                    <option value="minilm">MiniLM</option>
-                </select>
-            </label>
-            <button id="boton-agrupar" class="boton" type="button">Agrupar</button>
-            <div id="contenido-agrupamiento" class="tarjeta">
-                Elija la similitud y presione "Agrupar".
             </div>
         </section>
     </main>
