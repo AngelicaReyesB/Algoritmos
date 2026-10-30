@@ -44,4 +44,12 @@ public final class MatrizDistancias {
         }
         return distancias;
     }
+
+    /**
+     * Se calculan k(k - 1)/2 pares, y cada par cuesta lo que cueste la similitud.
+     * Ejemplo con TF-IDF: "O(k²) × O(n + m)".
+     */
+    public static String complejidad(AlgoritmoSimilitud similitud) {
+        return "O(k²) × " + similitud.getComplejidad();
+    }
 }
