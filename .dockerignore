@@ -1,0 +1,12 @@
+# Lo que NO entra a la imagen (ni al contexto de construccion)
+.git
+.github
+.idea
+**/*.iml
+**/target
+python
+docs
+results
+
+# Los PDF no se versionan (ver .gitignore): tampoco van en la imagen
+data/pdfs/*.pdf

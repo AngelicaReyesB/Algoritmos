@@ -1,6 +1,10 @@
-# Base de datos PostgreSQL 16 para el proyecto.
-# Levantar:  docker compose up -d
-# Detener:   docker compose down
+# Aplicacion + base de datos PostgreSQL 16.
+#   Construir y levantar:  docker compose up -d --build
+#   Ver los logs:          docker compose logs -f app
+#   Detener:               docker compose down      (la base se conserva)
+#   Detener y borrar BD:   docker compose down -v
+#
+# La contrasena se puede cambiar creando un archivo .env con:  DB_PASSWORD=otra_clave
 services:
   postgres:
     image: postgres:16
@@ -8,11 +12,34 @@ services:
     environment:
       POSTGRES_DB: ranking
       POSTGRES_USER: ranking
-      POSTGRES_PASSWORD: ranking
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ranking}
     ports:
-      - "55432:5432"
+      - "55432:5432"   # para seguir ejecutando la aplicacion desde IntelliJ
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:       # la aplicacion espera a que la base este lista
+      test: ["CMD-SHELL", "pg_isready -U ranking -d ranking"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    container_name: ranking-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/ranking   # "postgres" es el nombre del servicio de arriba
+      DB_USER: ranking
+      DB_PASSWORD: ${DB_PASSWORD:-ranking}
+      JAVA_OPTS: -Xmx350m
+      # CARGAR_CORPUS: "false"   # en produccion, cuando la base ya tiene los articulos
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data:ro    # aqui entran los PDF del profesor (no estan en la imagen)
+    mem_limit: 512m            # prueba local con el mismo tope que tendria un servidor pequeno
 
 volumes:
   pgdata:
