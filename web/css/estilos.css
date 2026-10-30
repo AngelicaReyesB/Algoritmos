@@ -436,3 +436,39 @@ h1, h2, h3 {
     text-align: center;
     min-width: 56px;
 }
+
+/* ===== Vista de agrupamiento ===== */
+.control + .boton {
+    margin-left: 8px;
+}
+
+.dendrograma {
+    overflow-x: auto; /* en celular el dendrograma se desliza en vez de achicarse demasiado */
+}
+
+.dendrograma svg {
+    display: block;
+    width: 100%;
+    min-width: 640px;
+    height: auto;
+}
+
+.dendrograma__lineas line {
+    stroke: var(--color-primario);
+    stroke-width: 1.5;
+}
+
+.dendrograma__etiquetas text {
+    font-size: 12px;
+    fill: var(--color-texto);
+}
+
+.dendrograma__eje {
+    stroke: var(--color-texto-suave);
+    stroke-width: 1;
+}
+
+.dendrograma__marca {
+    font-size: 11px;
+    fill: var(--color-texto-suave);
+}

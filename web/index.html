@@ -33,6 +33,7 @@
             <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
             <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
             <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud</button>
+            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento</button>
         </div>
     </nav>
 
@@ -82,6 +83,25 @@
             </div>
             <div id="contenido-similitud" class="tarjeta tarjeta--separada">
                 Seleccione los artículos y presione "Comparar seleccionados".
+            </div>
+        </section>
+
+        <section id="vista-agrupamiento" class="vista" role="tabpanel" hidden>
+            <h2>Agrupamiento jerárquico</h2>
+            <p class="descripcion">
+                Agrupa los 20 abstracts con 3 criterios (Single, Complete y Average linkage) y dibuja un
+                dendrograma para cada uno. La correlación cofenética indica cuál agrupa de forma más coherente.
+            </p>
+            <label class="control">
+                Similitud para calcular la distancia:
+                <select id="selector-similitud">
+                    <option value="tfidf" selected>Coseno con TF-IDF</option>
+                    <option value="minilm">MiniLM</option>
+                </select>
+            </label>
+            <button id="boton-agrupar" class="boton" type="button">Agrupar</button>
+            <div id="contenido-agrupamiento" class="tarjeta">
+                Elija la similitud y presione "Agrupar".
             </div>
         </section>
     </main>

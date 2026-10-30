@@ -137,4 +137,17 @@ public class ServicioSimilitud {
         }
         return algoritmos;
     }
+
+    /**
+     * Devuelve uno de los 6 algoritmos por su nombre (por ejemplo "Coseno TF-IDF" o "MiniLM").
+     * Lo usa el agrupamiento (R2) para no crear los algoritmos dos veces.
+     */
+    public AlgoritmoSimilitud buscarAlgoritmo(String nombre) {
+        for (AlgoritmoSimilitud algoritmo : obtenerAlgoritmos()) {
+            if (algoritmo.getNombre().equals(nombre)) {
+                return algoritmo;
+            }
+        }
+        throw new IllegalArgumentException("No existe el algoritmo de similitud: " + nombre);
+    }
 }
