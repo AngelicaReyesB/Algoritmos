@@ -55,6 +55,19 @@ class ServicioAgrupamientoTest {
     }
 
     @Test
+    void informaLaComplejidadDeCadaEtapa() {
+        ResultadoAgrupamiento resultado = SERVICIO.agrupar("tfidf");
+
+        assertEquals("O(k²) × O(n + m)", resultado.complejidadMatriz());
+        assertEquals("O(k²)", resultado.complejidadCorrelacion());
+        assertTrue(resultado.tiempoMatrizMs() >= 0);
+        for (DendrogramaCriterio dendrograma : resultado.dendrogramas()) {
+            assertEquals("O(k³)", dendrograma.complejidad());
+            assertTrue(dendrograma.tiempoCorrelacionMs() >= 0);
+        }
+    }
+
+    @Test
     void cadaDendrogramaTieneNMenosUnoUniones() {
         for (DendrogramaCriterio dendrograma : SERVICIO.agrupar("tfidf").dendrogramas()) {
             assertEquals(3, dendrograma.uniones().size());

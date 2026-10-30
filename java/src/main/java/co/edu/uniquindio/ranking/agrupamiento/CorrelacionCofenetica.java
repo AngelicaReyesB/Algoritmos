@@ -20,6 +20,11 @@ import java.util.Map;
  */
 public final class CorrelacionCofenetica {
 
+    /**
+     * La matriz cofenetica llena k x k celdas y Pearson recorre k(k - 1)/2 pares.
+     */
+    public static final String COMPLEJIDAD = "O(k²)";
+
     private CorrelacionCofenetica() {
     }
 

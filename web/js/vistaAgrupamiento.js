@@ -3,7 +3,8 @@
  *
  * Pide a GET /api/agrupamiento los dendrogramas de los 3 criterios
  * (Single, Complete y Average) y los dibuja en SVG, sin librerias.
- * Tambien muestra la correlacion cofenetica de cada criterio.
+ * Tambien muestra la complejidad y el tiempo de cada etapa, y la
+ * correlacion cofenetica de cada criterio.
  */
 import { obtenerAgrupamiento } from "./api.js";
 import { escaparHtml, mostrarError } from "./utilidades.js";
@@ -38,6 +39,7 @@ export async function agrupar() {
     try {
         const datos = await obtenerAgrupamiento(selectorSimilitud.value);
         contenedor.innerHTML =
+            crearTablaEtapas(datos) +
             crearTablaCorrelaciones(datos) +
             datos.dendrogramas.map((dendrograma) => crearSeccionDendrograma(dendrograma, datos)).join("");
     } catch (error) {
@@ -45,6 +47,36 @@ export async function agrupar() {
     } finally {
         botonAgrupar.disabled = false;
     }
+}
+
+/** Tabla con la complejidad y el tiempo de cada etapa del agrupamiento. */
+function crearTablaEtapas(datos) {
+    const fila = (etapa, complejidad, tiempoMs) => `
+        <tr>
+            <td>${etapa}</td>
+            <td>${escaparHtml(complejidad)}</td>
+            <td class="numero">${tiempoMs.toFixed(3)}</td>
+        </tr>`;
+
+    const filasCriterios = datos.dendrogramas.map((dendrograma) =>
+        fila(`Agrupamiento ${NOMBRES_CRITERIO[dendrograma.criterio]}`, dendrograma.complejidad, dendrograma.tiempoMs)
+    ).join("");
+    const tiempoCorrelaciones = datos.dendrogramas.reduce((suma, d) => suma + d.tiempoCorrelacionMs, 0);
+
+    return `
+        <h3>Complejidad y tiempos por etapa</h3>
+        <p class="nota">k = cantidad de artículos (${datos.articulos.length}); n y m = palabras de cada abstract.
+        La matriz de distancias se calcula una vez y la usan los tres criterios.</p>
+        <div class="tabla-desplazable">
+            <table class="tabla">
+                <thead><tr><th>Etapa</th><th>Complejidad</th><th>Tiempo (ms)</th></tr></thead>
+                <tbody>
+                    ${fila("Matriz de distancias", datos.complejidadMatriz, datos.tiempoMatrizMs)}
+                    ${filasCriterios}
+                    ${fila("Correlación cofenética (los 3 criterios)", `${datos.complejidadCorrelacion} cada una`, tiempoCorrelaciones)}
+                </tbody>
+            </table>
+        </div>`;
 }
 
 /** Tabla con la correlacion cofenetica de cada criterio; el mejor se resalta. */
@@ -56,7 +88,6 @@ function crearTablaCorrelaciones(datos) {
             <tr class="${esMejor ? "fila-destacada" : ""}">
                 <td>${NOMBRES_CRITERIO[dendrograma.criterio]}${insignia}</td>
                 <td class="numero">${dendrograma.correlacionCofenetica.toFixed(4)}</td>
-                <td class="numero">${dendrograma.tiempoMs.toFixed(3)}</td>
             </tr>`;
     }).join("");
     return `
@@ -65,7 +96,7 @@ function crearTablaCorrelaciones(datos) {
         Cuanto más cerca de 1, mejor representa el dendrograma las distancias reales.</p>
         <div class="tabla-desplazable">
             <table class="tabla">
-                <thead><tr><th>Criterio</th><th>Correlación</th><th>Tiempo (ms)</th></tr></thead>
+                <thead><tr><th>Criterio</th><th>Correlación</th></tr></thead>
                 <tbody>${filas}</tbody>
             </table>
         </div>`;

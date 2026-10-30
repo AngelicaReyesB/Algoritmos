@@ -48,7 +48,9 @@ public class ServicioAgrupamiento {
         }
 
         // Paso 1: una sola matriz de distancias para los tres criterios
+        long inicioMatriz = System.nanoTime();
         double[][] distancias = MatrizDistancias.calcular(algoritmo, resumenes);
+        double tiempoMatrizMs = (System.nanoTime() - inicioMatriz) / 1_000_000.0;
 
         // Pasos 2 y 3: agrupar con cada criterio y medir su correlacion cofenetica
         List<DendrogramaCriterio> dendrogramas = new ArrayList<>();
@@ -58,8 +60,12 @@ public class ServicioAgrupamiento {
             List<Union> uniones = AgrupamientoJerarquico.agrupar(distancias, criterio);
             double tiempoMs = (System.nanoTime() - inicio) / 1_000_000.0;
 
+            long inicioCorrelacion = System.nanoTime();
             double correlacion = CorrelacionCofenetica.calcular(distancias, uniones);
-            DendrogramaCriterio dendrograma = new DendrogramaCriterio(criterio.name(), uniones, correlacion, tiempoMs);
+            double tiempoCorrelacionMs = (System.nanoTime() - inicioCorrelacion) / 1_000_000.0;
+
+            DendrogramaCriterio dendrograma = new DendrogramaCriterio(criterio.name(), criterio.getComplejidad(),
+                    uniones, correlacion, tiempoMs, tiempoCorrelacionMs);
             dendrogramas.add(dendrograma);
 
             if (mejor == null || correlacion > mejor.correlacionCofenetica()) {
@@ -67,7 +73,9 @@ public class ServicioAgrupamiento {
             }
         }
 
-        return new ResultadoAgrupamiento(similitud, articulos, dendrogramas, mejor.criterio());
+        return new ResultadoAgrupamiento(similitud, articulos,
+                MatrizDistancias.complejidad(algoritmo), tiempoMatrizMs,
+                CorrelacionCofenetica.COMPLEJIDAD, dendrogramas, mejor.criterio());
     }
 
     /** Traduce el parametro de la URL al algoritmo del Requerimiento 1. */
