@@ -3,16 +3,25 @@ package co.edu.uniquindio.ranking.busqueda;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.api.Test;
 
-class KnuthMorrisPrattTest {
+/**
+ * Pruebas de KMP.
+ *
+ * Hereda las pruebas comunes de PruebasAlgoritmoBusqueda (inicio, final, varias
+ * ocurrencias, solapadas, vacios, mayusculas, comparacion con fuerza bruta...) y
+ * agrega las propias: la tabla de prefijos y la busqueda con la tabla ya construida.
+ */
+class KnuthMorrisPrattTest extends PruebasAlgoritmoBusqueda {
 
     private final KnuthMorrisPratt kmp = new KnuthMorrisPratt();
+
+    @Override
+    protected AlgoritmoBusqueda crearAlgoritmo() {
+        return kmp;
+    }
 
     // ---------- Tabla de prefijos ----------
 
@@ -37,62 +46,24 @@ class KnuthMorrisPrattTest {
         assertArrayEquals(new int[] {0, 1, 0, 1, 2, 2, 3}, kmp.construirTablaPrefijos("aabaaab"));
     }
 
-    // ---------- Busqueda ----------
+    // ---------- Preprocesamiento y busqueda por separado ----------
 
     @Test
-    void encuentraUnaOcurrencia() {
-        assertEquals(List.of(4), kmp.buscar("los algoritmos de busqueda", "algoritmos"));
+    void buscarConLaTablaYaConstruidaDaLoMismo() {
+        String texto = "abababca";
+        String patron = "ababca";
+        int[] tabla = kmp.construirTablaPrefijos(patron);
+
+        assertEquals(kmp.buscar(texto, patron), kmp.buscar(texto, patron, tabla));
+        assertEquals(List.of(2), kmp.buscar(texto, patron, tabla));
     }
 
     @Test
-    void encuentraVariasOcurrencias() {
-        assertEquals(List.of(0, 8, 16), kmp.buscar("modelo, modelo, modelo", "modelo"));
+    void buscarConTablaYaConstruidaYPatronVacioDevuelveListaVacia() {
+        assertEquals(List.of(), kmp.buscar("texto", "", new int[0]));
     }
 
-    @Test
-    void encuentraOcurrenciasSolapadas() {
-        assertEquals(List.of(0, 1, 2), kmp.buscar("aaaa", "aa"));
-        assertEquals(List.of(0, 2), kmp.buscar("ababa", "aba"));
-    }
-
-    @Test
-    void ejemploClasicoConRetroceso() {
-        assertEquals(List.of(10), kmp.buscar("ababdabacdababcabab", "ababcabab"));
-    }
-
-    @Test
-    void sinCoincidenciaDevuelveListaVacia() {
-        assertTrue(kmp.buscar("inteligencia artificial", "xyz").isEmpty());
-    }
-
-    @Test
-    void patronAlInicioYAlFinal() {
-        assertEquals(List.of(0, 9), kmp.buscar("modelo y modelo", "modelo"));
-    }
-
-    @Test
-    void patronIgualAlTexto() {
-        assertEquals(List.of(0), kmp.buscar("gpt", "gpt"));
-    }
-
-    @Test
-    void patronVacioOMasLargoQueElTexto() {
-        assertTrue(kmp.buscar("texto", "").isEmpty());
-        assertTrue(kmp.buscar("ab", "abc").isEmpty());
-        assertTrue(kmp.buscar("", "a").isEmpty());
-    }
-
-    @Test
-    void distingueMayusculasDeMinusculas() {
-        assertTrue(kmp.buscar("Models", "models").isEmpty());
-        assertEquals(List.of(0), kmp.buscar("Models", "Models"));
-    }
-
-    @Test
-    void funcionaConTildesYEnie() {
-        assertEquals(List.of(3), kmp.buscar("el análisis de año", "análisis"));
-        assertEquals(List.of(15), kmp.buscar("el análisis de año", "año"));
-    }
+    // ---------- Entradas invalidas ----------
 
     @Test
     void rechazaEntradasNulas() {
@@ -100,36 +71,8 @@ class KnuthMorrisPrattTest {
         assertThrows(IllegalArgumentException.class, () -> kmp.buscar("a", null));
     }
 
-    // ---------- Comparacion con una referencia (solo en pruebas) ----------
-
     @Test
-    void casosAleatoriosCoincidenConLaReferencia() {
-        Random azar = new Random(42);
-        for (int caso = 0; caso < 500; caso++) {
-            String texto = cadenaAleatoria(azar, azar.nextInt(60));
-            String patron = cadenaAleatoria(azar, 1 + azar.nextInt(5));
-            assertEquals(referencia(texto, patron), kmp.buscar(texto, patron),
-                    "texto=" + texto + " patron=" + patron);
-        }
-    }
-
-    /** Alfabeto de 2 letras: fuerza muchos empates y solapamientos. */
-    private String cadenaAleatoria(Random azar, int largo) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < largo; i++) {
-            sb.append(azar.nextBoolean() ? 'a' : 'b');
-        }
-        return sb.toString();
-    }
-
-    /** Busqueda ingenua: prueba cada posicion. Solo sirve para verificar a KMP. */
-    private List<Integer> referencia(String texto, String patron) {
-        List<Integer> posiciones = new ArrayList<>();
-        for (int i = 0; i + patron.length() <= texto.length(); i++) {
-            if (texto.startsWith(patron, i)) {
-                posiciones.add(i);
-            }
-        }
-        return posiciones;
+    void sabeSuNombre() {
+        assertEquals("KMP", kmp.getNombre());
     }
 }

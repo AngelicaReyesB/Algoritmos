@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -75,6 +76,21 @@ class BoyerMooreTest extends PruebasAlgoritmoBusqueda {
     @Test
     void sufijoBuenoDeUnSoloCaracter() {
         assertArrayEquals(new int[] {1, 1}, boyerMoore.construirTablaSufijoBueno("a"));
+    }
+
+    // ---------- Preprocesamiento y busqueda por separado ----------
+
+    @Test
+    void buscarConLasTablasYaConstruidasDaLoMismo() {
+        String texto = "abababca";
+        String patron = "ababca";
+        assertEquals(boyerMoore.buscar(texto, patron),
+                boyerMoore.buscar(texto, patron,
+                        boyerMoore.construirTablaCaracterMalo(patron),
+                        boyerMoore.construirTablaSufijoBueno(patron)));
+        assertEquals(List.of(2), boyerMoore.buscar(texto, patron,
+                boyerMoore.construirTablaCaracterMalo(patron),
+                boyerMoore.construirTablaSufijoBueno(patron)));
     }
 
     // ---------- Entradas invalidas ----------
