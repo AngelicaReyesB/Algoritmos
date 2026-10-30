@@ -88,14 +88,18 @@ function parMasParecido(matriz) {
     return mejor;
 }
 
-/** Tabla con el tiempo de cada algoritmo y su par de articulos mas parecido. */
+/** Tabla con la complejidad, el tiempo y el par mas parecido de cada algoritmo. */
 function crearTablaResumen(resultados, articulos) {
+    const k = articulos.length;
+    const pares = (k * (k - 1)) / 2;
+
     const filas = resultados.map((resultado) => {
         const par = parMasParecido(resultado.matriz);
         const nombrePar = `${numeroDelArticulo(articulos[par.i])} y ${numeroDelArticulo(articulos[par.j])}`;
         return `
             <tr>
                 <td>${escaparHtml(resultado.algoritmo)}</td>
+                <td>${escaparHtml(resultado.complejidad)}</td>
                 <td class="numero">${resultado.tiempoMs.toFixed(3)}</td>
                 <td class="numero">${nombrePar}</td>
                 <td class="numero">${par.valor.toFixed(3)}</td>
@@ -103,11 +107,22 @@ function crearTablaResumen(resultados, articulos) {
     }).join("");
     return `
         <h3>Resumen</h3>
+        <p class="nota">
+            <strong>Complejidad por par:</strong> n y m son la cantidad de palabras de cada abstract;
+            d es la dimensión del vector (FastText 300, MiniLM 384).
+            Con ${k} artículos se comparan k(k − 1)/2 = ${pares} pares, así que el costo de la matriz
+            es ${pares} × la complejidad de un par.
+        </p>
         <p class="nota">El tiempo incluye calcular toda la matriz. En FastText y MiniLM la primera
         comparación también incluye cargar el modelo.</p>
         <div class="tabla-desplazable">
             <table class="tabla">
-                <thead><tr><th>Algoritmo</th><th>Tiempo (ms)</th><th>Par más parecido</th><th>Similitud</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Algoritmo</th><th>Complejidad por par</th><th>Tiempo (ms)</th>
+                        <th>Par más parecido</th><th>Similitud</th>
+                    </tr>
+                </thead>
                 <tbody>${filas}</tbody>
             </table>
         </div>`;

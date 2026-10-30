@@ -33,6 +33,12 @@ public class Levenshtein implements AlgoritmoSimilitud {
         return "Levenshtein";
     }
 
+    /** Llena una matriz de (n + 1) x (m + 1) celdas, cada una en tiempo constante. */
+    @Override
+    public String getComplejidad() {
+        return "O(n·m)";
+    }
+
     /**
      * Similitud = 1 - distancia / largo de la lista mas larga.
      * Asi queda entre 0 (hay que cambiarlo todo) y 1 (textos iguales).

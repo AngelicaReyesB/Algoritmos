@@ -59,6 +59,18 @@ class ServicioSimilitudTest {
     }
 
     @Test
+    void cadaAlgoritmoInformaSuComplejidad() {
+        ComparacionSimilitud comparacion = SERVICIO.comparar(List.of(1, 2));
+
+        List<String> complejidades = new ArrayList<>();
+        for (ResultadoSimilitud resultado : comparacion.resultados()) {
+            complejidades.add(resultado.complejidad());
+        }
+        assertEquals(List.of("O(n·m)", "O(n·m)", "O(n + m)", "O(n + m)", "O((n + m)·d)",
+                "O(d) + modelo (1 vez por texto)"), complejidades);
+    }
+
+    @Test
     void losArticulosVienenEnElOrdenPedido() {
         ComparacionSimilitud comparacion = SERVICIO.comparar(List.of(3, 1));
         assertEquals(3, comparacion.articulos().get(0).id().intValue());
