@@ -58,6 +58,12 @@ public class NeedlemanWunsch implements AlgoritmoSimilitud {
         return "Needleman-Wunsch";
     }
 
+    /** Igual que Levenshtein: una matriz de (n + 1) x (m + 1) celdas. */
+    @Override
+    public String getComplejidad() {
+        return "O(n·m)";
+    }
+
     /**
      * Lleva el puntaje del mejor alineamiento a un valor entre 0 y 1.
      *

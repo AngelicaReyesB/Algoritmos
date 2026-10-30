@@ -63,7 +63,8 @@ public class ServicioSimilitud {
             long inicio = System.nanoTime();
             double[][] matriz = calcularMatriz(algoritmo, articulos);
             double tiempoMs = (System.nanoTime() - inicio) / 1_000_000.0;
-            resultados.add(new ResultadoSimilitud(algoritmo.getNombre(), matriz, tiempoMs));
+            resultados.add(new ResultadoSimilitud(algoritmo.getNombre(), algoritmo.getComplejidad(),
+                    matriz, tiempoMs));
         }
         return new ComparacionSimilitud(articulos, resultados);
     }

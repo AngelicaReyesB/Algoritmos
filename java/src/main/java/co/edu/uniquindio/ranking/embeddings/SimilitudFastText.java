@@ -34,6 +34,15 @@ public class SimilitudFastText implements AlgoritmoSimilitud {
     }
 
     /**
+     * Por cada palabra se suma su vector de d = 300 numeros: (n + m) * d.
+     * El coseno final cuesta d.
+     */
+    @Override
+    public String getComplejidad() {
+        return "O((n + m)·d)";
+    }
+
+    /**
      * Coseno entre los vectores promedio de los dos textos.
      *
      * Con embeddings el coseno puede ser negativo (vectores que apuntan en

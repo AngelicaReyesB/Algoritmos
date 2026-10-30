@@ -36,6 +36,15 @@ public class SimilitudMiniLm implements AlgoritmoSimilitud {
     }
 
     /**
+     * Comparar dos vectores ya calculados cuesta d = 384 (el coseno).
+     * El vector de cada texto lo calcula el modelo una sola vez y queda guardado.
+     */
+    @Override
+    public String getComplejidad() {
+        return "O(d) + modelo (1 vez por texto)";
+    }
+
+    /**
      * Coseno entre los vectores de los dos textos.
      *
      * Igual que en FastText, un coseno negativo se toma como 0

@@ -48,6 +48,16 @@ public class CosenoTfIdf implements AlgoritmoSimilitud {
         return "Coseno TF-IDF";
     }
 
+    /**
+     * Arma el vector TF-IDF de cada texto recorriendo sus palabras una vez (n + m)
+     * y el coseno recorre esos vectores. El IDF se calcula una sola vez al crear
+     * el algoritmo, no en cada comparacion.
+     */
+    @Override
+    public String getComplejidad() {
+        return "O(n + m)";
+    }
+
     @Override
     public double similitud(String textoA, String textoB) {
         return coseno(vectorTfIdf(textoA), vectorTfIdf(textoB));

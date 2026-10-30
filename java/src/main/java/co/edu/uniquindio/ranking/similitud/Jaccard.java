@@ -28,6 +28,15 @@ public class Jaccard implements AlgoritmoSimilitud {
         return "Jaccard";
     }
 
+    /**
+     * Armar los dos conjuntos cuesta n + m. La interseccion recorre un conjunto
+     * y pregunta contains() en el otro, que en un HashSet cuesta O(1) en promedio.
+     */
+    @Override
+    public String getComplejidad() {
+        return "O(n + m)";
+    }
+
     @Override
     public double similitud(String textoA, String textoB) {
         return jaccard(conjunto(textoA), conjunto(textoB));
