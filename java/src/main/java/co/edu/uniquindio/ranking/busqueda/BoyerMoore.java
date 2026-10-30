@@ -26,12 +26,18 @@ import java.util.Map;
  *    una construccion lineal O(m) mas dificil de explicar.
  *  - Busqueda: O(n / m) en el mejor caso, O(n * m) en el peor.
  *
+ * El trabajo se divide en dos etapas que se pueden medir por separado:
+ *  - Preprocesamiento: construirTablaCaracterMalo(patron) y construirTablaSufijoBueno(patron).
+ *  - Busqueda: buscar(texto, patron, caracterMalo, sufijoBueno), con las tablas ya construidas.
+ * buscar(texto, patron) hace las dos seguidas.
+ *
  * Implementado a mano: no usa indexOf, contains ni funciones equivalentes.
  * La busqueda es exacta (distingue mayusculas y minusculas) y devuelve las
  * posiciones (empezando en 0) de todas las ocurrencias, incluidas las solapadas.
  */
 public class BoyerMoore implements AlgoritmoBusqueda {
 
+    @Override
     public String getNombre() {
         return "Boyer-Moore";
     }
@@ -103,16 +109,27 @@ public class BoyerMoore implements AlgoritmoBusqueda {
     }
 
     /**
-     * Busca todas las ocurrencias del patron en el texto.
+     * Preprocesamiento (las dos tablas) + busqueda.
      *
      * @return posiciones (desde 0) donde empieza cada ocurrencia; lista vacia si
      *         no hay ninguna, si el patron esta vacio o si es mas largo que el texto
      */
     @Override
     public List<Integer> buscar(String texto, String patron) {
-        if (texto == null || patron == null) {
-            throw new IllegalArgumentException("El texto y el patron no pueden ser nulos");
+        comprobarNoNulos(texto, patron);
+        if (patron.isEmpty() || patron.length() > texto.length()) {
+            return new ArrayList<>();
         }
+        return buscar(texto, patron, construirTablaCaracterMalo(patron), construirTablaSufijoBueno(patron));
+    }
+
+    /**
+     * Busqueda con las dos tablas ya construidas (construirTablaCaracterMalo y
+     * construirTablaSufijoBueno), para medir la busqueda sin el preprocesamiento.
+     */
+    public List<Integer> buscar(String texto, String patron,
+                                Map<Character, Integer> caracterMalo, int[] sufijoBueno) {
+        comprobarNoNulos(texto, patron);
 
         List<Integer> posiciones = new ArrayList<>();
         int n = texto.length();
@@ -120,9 +137,6 @@ public class BoyerMoore implements AlgoritmoBusqueda {
         if (m == 0 || m > n) {
             return posiciones;
         }
-
-        Map<Character, Integer> caracterMalo = construirTablaCaracterMalo(patron);
-        int[] sufijoBueno = construirTablaSufijoBueno(patron);
 
         int s = 0; // posicion del texto donde esta alineado el inicio del patron
         while (s <= n - m) {
@@ -147,5 +161,11 @@ public class BoyerMoore implements AlgoritmoBusqueda {
             }
         }
         return posiciones;
+    }
+
+    private static void comprobarNoNulos(String texto, String patron) {
+        if (texto == null || patron == null) {
+            throw new IllegalArgumentException("El texto y el patron no pueden ser nulos");
+        }
     }
 }

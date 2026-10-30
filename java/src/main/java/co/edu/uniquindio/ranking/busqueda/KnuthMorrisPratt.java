@@ -12,11 +12,21 @@ import java.util.List;
  * Costo: preprocesamiento O(m) + busqueda O(n) = O(n + m), con n = longitud del
  * texto y m = longitud del patron.
  *
+ * El trabajo se divide en dos etapas que se pueden medir por separado:
+ *  - Preprocesamiento: construirTablaPrefijos(patron).
+ *  - Busqueda: buscar(texto, patron, tablaPrefijos), con la tabla ya construida.
+ * buscar(texto, patron) hace las dos seguidas.
+ *
  * Implementado a mano: no usa indexOf, contains ni funciones equivalentes.
  * La busqueda es exacta (distingue mayusculas y minusculas) y devuelve las
  * posiciones (empezando en 0) de todas las ocurrencias, incluidas las solapadas.
  */
-public class KnuthMorrisPratt {
+public class KnuthMorrisPratt implements AlgoritmoBusqueda {
+
+    @Override
+    public String getNombre() {
+        return "KMP";
+    }
 
     /**
      * Paso 1: tabla de prefijos (tambien llamada tabla LPS o funcion de fallo).
@@ -49,15 +59,26 @@ public class KnuthMorrisPratt {
     }
 
     /**
-     * Paso 2: recorre el texto una sola vez usando la tabla de prefijos.
+     * Preprocesamiento + busqueda.
      *
      * @return posiciones (desde 0) donde empieza cada ocurrencia; lista vacia si
      *         no hay ninguna, si el patron esta vacio o si es mas largo que el texto
      */
+    @Override
     public List<Integer> buscar(String texto, String patron) {
-        if (texto == null || patron == null) {
-            throw new IllegalArgumentException("El texto y el patron no pueden ser nulos");
+        comprobarNoNulos(texto, patron);
+        if (patron.isEmpty() || patron.length() > texto.length()) {
+            return new ArrayList<>();
         }
+        return buscar(texto, patron, construirTablaPrefijos(patron));
+    }
+
+    /**
+     * Paso 2: recorre el texto una sola vez usando la tabla de prefijos ya
+     * construida con construirTablaPrefijos(patron).
+     */
+    public List<Integer> buscar(String texto, String patron, int[] prefijo) {
+        comprobarNoNulos(texto, patron);
 
         List<Integer> posiciones = new ArrayList<>();
         int n = texto.length();
@@ -66,7 +87,6 @@ public class KnuthMorrisPratt {
             return posiciones;
         }
 
-        int[] prefijo = construirTablaPrefijos(patron);
         int j = 0; // cuantos caracteres del patron coinciden en este momento
 
         for (int i = 0; i < n; i++) {
@@ -85,5 +105,11 @@ public class KnuthMorrisPratt {
             }
         }
         return posiciones;
+    }
+
+    private static void comprobarNoNulos(String texto, String patron) {
+        if (texto == null || patron == null) {
+            throw new IllegalArgumentException("El texto y el patron no pueden ser nulos");
+        }
     }
 }

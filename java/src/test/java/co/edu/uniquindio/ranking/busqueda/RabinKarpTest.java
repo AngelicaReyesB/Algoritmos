@@ -129,6 +129,29 @@ class RabinKarpTest extends PruebasAlgoritmoBusqueda {
         }
     }
 
+    // ---------- Preprocesamiento y busqueda por separado ----------
+
+    @Test
+    void preprocesarCalculaElPesoDelPrimeroYLosDosHashes() {
+        RabinKarp.Preprocesamiento pre = rabinKarp.preprocesar("xxab", "ab");
+
+        assertEquals(54L, pre.pesoPrimero());        // 256^1 mod 101
+        assertEquals(84, pre.hashPatron());          // hash de "ab"
+        assertEquals(35, pre.hashPrimeraVentana());  // hash de "xx"
+    }
+
+    @Test
+    void buscarConElPreprocesamientoYaCalculadoDaLoMismo() {
+        RabinKarp pequeno = new RabinKarp(7);
+        String texto = "hahaha";
+        String patron = "ha";
+        RabinKarp.Preprocesamiento pre = pequeno.preprocesar(texto, patron);
+
+        assertEquals(pequeno.buscarContandoColisiones(texto, patron),
+                pequeno.buscarContandoColisiones(texto, patron, pre));
+        assertEquals(pequeno.buscar(texto, patron), pequeno.buscar(texto, patron, pre));
+    }
+
     // ---------- Entradas invalidas ----------
 
     @Test
