@@ -9,6 +9,7 @@ import { cargarRanking } from "./vistaRanking.js";
 import { medirTiempos } from "./vistaTiempos.js";
 import { buscar } from "./vistaBusqueda.js";
 import { cargarSeleccionArticulos, compararSeleccionados, seleccionarTodos } from "./vistaSimilitud.js";
+import { agrupar } from "./vistaAgrupamiento.js";
 
 const pestanas = document.querySelectorAll(".pestana");
 const vistas = document.querySelectorAll(".vista");
@@ -51,6 +52,7 @@ document.getElementById("formulario-busqueda").addEventListener("submit", (event
 });
 document.getElementById("boton-seleccionar-todos").addEventListener("click", seleccionarTodos);
 document.getElementById("boton-comparar").addEventListener("click", compararSeleccionados);
+document.getElementById("boton-agrupar").addEventListener("click", agrupar);
 
 verificarApi();
 cargarArticulos();
