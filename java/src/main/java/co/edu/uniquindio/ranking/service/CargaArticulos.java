@@ -2,6 +2,7 @@ package co.edu.uniquindio.ranking.service;
 
 import co.edu.uniquindio.ranking.model.Articulo;
 import co.edu.uniquindio.ranking.pdf.ExtractorAbstract;
+import co.edu.uniquindio.ranking.pdf.ExtractorMetadatos;
 import co.edu.uniquindio.ranking.pdf.LectorPdf;
 import co.edu.uniquindio.ranking.repository.RepositorioArticulos;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,17 +19,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 /**
  * Al iniciar la aplicacion carga el corpus en la base de datos:
  *
  * 1. Borra lo que habia, para que no queden articulos de un corpus anterior.
- * 2. Extrae el abstract de cada PDF de data/pdfs con PDFBox.
- *    El titulo y los autores salen de data/metadatos.json.
+ * 2. Extrae de cada PDF de data/pdfs el abstract (ExtractorAbstract)
+ *    y el titulo y los autores (ExtractorMetadatos).
  * 3. Carga las correcciones manuales de data/abstracts (JSON con "manual": true).
  *
  * Implementa CommandLineRunner: Spring ejecuta el metodo run() una vez,
@@ -43,26 +42,26 @@ public class CargaArticulos implements CommandLineRunner {
 
     private final LectorPdf lector;
     private final ExtractorAbstract extractor;
+    private final ExtractorMetadatos extractorMetadatos;
     private final RepositorioArticulos repositorio;
     private final ObjectMapper lectorJson;
     private final Path carpetaPdfs;
     private final Path carpetaAbstracts;
-    private final Path archivoMetadatos;
 
     public CargaArticulos(LectorPdf lector,
                           ExtractorAbstract extractor,
+                          ExtractorMetadatos extractorMetadatos,
                           RepositorioArticulos repositorio,
                           ObjectMapper lectorJson,
                           @Value("${ranking.carpeta-pdfs}") String carpetaPdfs,
-                          @Value("${ranking.carpeta-abstracts}") String carpetaAbstracts,
-                          @Value("${ranking.archivo-metadatos}") String archivoMetadatos) {
+                          @Value("${ranking.carpeta-abstracts}") String carpetaAbstracts) {
         this.lector = lector;
         this.extractor = extractor;
+        this.extractorMetadatos = extractorMetadatos;
         this.repositorio = repositorio;
         this.lectorJson = lectorJson;
         this.carpetaPdfs = Path.of(carpetaPdfs);
         this.carpetaAbstracts = Path.of(carpetaAbstracts);
-        this.archivoMetadatos = Path.of(archivoMetadatos);
     }
 
     @Override
@@ -74,7 +73,6 @@ public class CargaArticulos implements CommandLineRunner {
 
     /** Paso 2: extraccion automatica desde los PDF. */
     public void cargarPdfs() throws IOException {
-        Map<Integer, JsonNode> metadatos = leerMetadatos();
         List<Path> pdfs = listarArchivos(carpetaPdfs, ".pdf");
 
         int extraidos = 0;
@@ -86,35 +84,19 @@ public class CargaArticulos implements CommandLineRunner {
                 continue;
             }
 
-            JsonNode datos = metadatos.get(numeroDelArchivo(nombre));
-            String titulo = nombre;
-            String autores = null;
-            if (datos == null) {
-                log.warn("Sin metadatos en {}: {}", archivoMetadatos.getFileName(), nombre);
-            } else {
-                titulo = datos.path("titulo").asText();
-                autores = datos.path("autores").asText();
+            ExtractorMetadatos.Metadatos metadatos = extractorMetadatos.extraer(lector.leerPortada(pdf));
+            String titulo = metadatos.titulo();
+            if (titulo == null || titulo.isBlank()) {
+                log.warn("Sin titulo detectado: {}", nombre);
+                titulo = nombre;
             }
-            repositorio.guardar(new Articulo(null, nombre, titulo, autores, resumen, false));
+            if (metadatos.autores() == null) {
+                log.warn("Sin autores detectados: {}", nombre);
+            }
+            repositorio.guardar(new Articulo(null, nombre, titulo, metadatos.autores(), resumen, false));
             extraidos++;
         }
-        log.info("Abstracts extraidos: {}/{}", extraidos, pdfs.size());
-    }
-
-    /**
-     * Lee data/metadatos.json: una lista de { "numero", "titulo", "autores" }.
-     * Devuelve un mapa numero del articulo -> sus datos.
-     */
-    private Map<Integer, JsonNode> leerMetadatos() throws IOException {
-        Map<Integer, JsonNode> metadatos = new HashMap<>();
-        if (!Files.exists(archivoMetadatos)) {
-            log.warn("No existe el archivo de metadatos: {}", archivoMetadatos.toAbsolutePath());
-            return metadatos;
-        }
-        for (JsonNode articulo : lectorJson.readTree(archivoMetadatos.toFile())) {
-            metadatos.put(articulo.path("numero").asInt(), articulo);
-        }
-        return metadatos;
+        log.info("Articulos extraidos: {}/{}", extraidos, pdfs.size());
     }
 
     /**
