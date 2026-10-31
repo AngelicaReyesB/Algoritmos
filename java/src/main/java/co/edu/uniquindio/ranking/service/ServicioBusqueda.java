@@ -1,5 +1,6 @@
 package co.edu.uniquindio.ranking.service;
 
+import co.edu.uniquindio.ranking.busqueda.AlgoritmoBusqueda;
 import co.edu.uniquindio.ranking.busqueda.BoyerMoore;
 import co.edu.uniquindio.ranking.busqueda.KnuthMorrisPratt;
 import co.edu.uniquindio.ranking.busqueda.RabinKarp;
@@ -15,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Busca un patron en los abstracts guardados con KMP, Boyer-Moore y Rabin-Karp.
@@ -75,6 +78,16 @@ public class ServicioBusqueda {
             textos.add(articulo.resumen() == null ? "" : articulo.resumen());
         }
 
+        // n (largo del texto) y sigma (tamano del alfabeto), para el analisis de complejidad
+        int longitudTexto = 0;
+        Set<Character> alfabeto = new HashSet<>();
+        for (String texto : textos) {
+            longitudTexto += texto.length();
+            for (int i = 0; i < texto.length(); i++) {
+                alfabeto.add(texto.charAt(i));
+            }
+        }
+
         // Preprocesamiento de cada algoritmo
         int[] tablaPrefijos = kmp.construirTablaPrefijos(patron);
         Map<Character, Integer> caracterMalo = boyerMoore.construirTablaCaracterMalo(patron);
@@ -119,7 +132,7 @@ public class ServicioBusqueda {
                 sufijoBueno, hashes, colisiones);
 
         return new ResultadoBusqueda(patron, patron.length(), todosCoinciden, totalOcurrencias,
-                conOcurrencias, articulos.size(), encontrados, tiempos);
+                conOcurrencias, articulos.size(), longitudTexto, alfabeto.size(), encontrados, tiempos);
     }
 
     /** El patron debe tener entre 1 y PATRON_MAXIMO caracteres. Un espacio cuenta como caracter. */
@@ -198,9 +211,16 @@ public class ServicioBusqueda {
                 () -> buscarConRabinKarp(textos, patron, hashes));
 
         return List.of(
-                new TiempoBusqueda(kmp.getNombre(), kmpPre, kmpBusqueda, null),
-                new TiempoBusqueda(boyerMoore.getNombre(), bmPre, bmBusqueda, null),
-                new TiempoBusqueda(rabinKarp.getNombre(), rkPre, rkBusqueda, colisiones));
+                nuevoTiempo(kmp, kmpPre, kmpBusqueda, null),
+                nuevoTiempo(boyerMoore, bmPre, bmBusqueda, null),
+                nuevoTiempo(rabinKarp, rkPre, rkBusqueda, colisiones));
+    }
+
+    /** Une los tiempos medidos con la complejidad que declara el propio algoritmo. */
+    private TiempoBusqueda nuevoTiempo(AlgoritmoBusqueda algoritmo, ResultadoMedicion preprocesamiento,
+                                       ResultadoMedicion busqueda, Integer colisiones) {
+        return new TiempoBusqueda(algoritmo.getNombre(), algoritmo.getComplejidadPreprocesamiento(),
+                algoritmo.getComplejidadBusqueda(), preprocesamiento, busqueda, colisiones);
     }
 
     private ResultadoMedicion medir(String etapa, java.util.function.Supplier<?> tarea) {

@@ -12,11 +12,14 @@ import java.util.List;
  * @param totalOcurrencias        ocurrencias en todo el corpus
  * @param articulosConOcurrencias articulos donde aparece el patron al menos una vez
  * @param totalArticulos          articulos revisados
+ * @param longitudTexto           n: caracteres de todos los abstracts juntos
+ * @param tamanoAlfabeto          sigma: cantidad de caracteres distintos que aparecen en los abstracts
  * @param articulos               un elemento por articulo, en el orden en que se cargaron
  * @param tiempos                 un elemento por algoritmo
  */
 public record ResultadoBusqueda(String patron, int longitudPatron, boolean coinciden,
                                 int totalOcurrencias, int articulosConOcurrencias,
-                                int totalArticulos, List<ArticuloEncontrado> articulos,
+                                int totalArticulos, int longitudTexto, int tamanoAlfabeto,
+                                List<ArticuloEncontrado> articulos,
                                 List<TiempoBusqueda> tiempos) {
 }

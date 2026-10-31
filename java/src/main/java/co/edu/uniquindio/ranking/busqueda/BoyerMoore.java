@@ -43,6 +43,24 @@ public class BoyerMoore implements AlgoritmoBusqueda {
     }
 
     /**
+     * Complejidad real del codigo (n = largo del texto, m = largo del patron).
+     * Caracter malo: O(m). Sufijo bueno: se construye desde su definicion, O(m^3).
+     * Existe una construccion en O(m), pero con patrones cortos el costo es minimo
+     * y se prefirio un codigo facil de explicar.
+     * Busqueda: O(nm) en el peor caso (el patron aparece muchas veces, como "aa" en "aaaa..."),
+     * O(n/m) en el mejor caso (cada intento salta m posiciones).
+     */
+    @Override
+    public String getComplejidadPreprocesamiento() {
+        return "O(m^3)";
+    }
+
+    @Override
+    public String getComplejidadBusqueda() {
+        return "peor caso O(nm); mejor caso O(n/m)";
+    }
+
+    /**
      * Tabla del caracter malo: para cada caracter del patron, la posicion (desde 0)
      * de su ULTIMA aparicion. Un caracter que no esta en la tabla no aparece en el
      * patron.

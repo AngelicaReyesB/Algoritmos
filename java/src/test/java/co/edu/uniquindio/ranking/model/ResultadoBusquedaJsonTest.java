@@ -27,6 +27,8 @@ class ResultadoBusquedaJsonTest {
         assertEquals(2, json.get("totalOcurrencias").asInt());
         assertEquals(1, json.get("articulosConOcurrencias").asInt());
         assertEquals(2, json.get("totalArticulos").asInt());
+        assertEquals(38, json.get("longitudTexto").asInt()); // 28 + 10 caracteres
+        assertTrue(json.get("tamanoAlfabeto").asInt() > 0);
 
         JsonNode primero = json.get("articulos").get(0);
         assertEquals(1, primero.get("id").asInt());
@@ -46,5 +48,7 @@ class ResultadoBusquedaJsonTest {
         assertTrue(rabinKarp.get("busqueda").get("minimoMs").isNumber());
         assertEquals(3, rabinKarp.get("busqueda").get("repeticiones").asInt());
         assertTrue(json.get("tiempos").get(0).get("colisiones").isNull());
+        assertEquals("O(m^3)", json.get("tiempos").get(1).get("complejidadPreprocesamiento").asText());
+        assertEquals("O(n)", json.get("tiempos").get(0).get("complejidadBusqueda").asText());
     }
 }
