@@ -2,46 +2,66 @@
 
 import unittest
 
-from src.extraccion import extraer_abstract, extraer_titulo
+from src.extraccion import extraer_abstract, numero_del_archivo
 
 
 class PruebasExtraccion(unittest.TestCase):
 
-    def test_extrae_el_texto_entre_abstract_e_introduccion(self):
-        texto = "Titulo del articulo\nAutores\nAbstract\nWe propose a new model.\n1 Introduction\nTexto"
-        self.assertEqual(extraer_abstract(texto), "We propose a new model")
-
-    def test_termina_en_palabras_clave(self):
-        texto = "Abstract: Diffusion models work well.\nKeywords: diffusion, images"
-        self.assertEqual(extraer_abstract(texto), "Diffusion models work well")
-
     def test_sin_la_palabra_abstract_devuelve_none(self):
-        self.assertIsNone(extraer_abstract("Titulo\nAutores\n1 Introduction\nEl texto no tiene esa seccion"))
+        self.assertIsNone(extraer_abstract("Titulo\nAutores\n1. Introduction\nEl texto no tiene esa seccion"))
 
-    def test_elimina_el_sello_de_arxiv(self):
-        texto = "Abstract\nLanguage models scale.\narXiv:2001.08361v1 [cs.LG] 23 Jan 2020\n1 Introduction"
-        self.assertEqual(extraer_abstract(texto), "Language models scale")
+    def test_springer_termina_en_palabras_clave(self):
+        texto = ("REVIEW ARTICLE\nTitulo\nAbstract \nGenerative AI provides opportunities.\n"
+                 "Keywords:  Generative artificial intelligence, Scoping review")
+        self.assertEqual(extraer_abstract(texto), "Generative AI provides opportunities")
 
-    def test_termina_en_nota_al_pie_de_contribucion(self):
-        texto = "Abstract\nThe dominant models are recurrent.\n∗Equal contribution. Listing order is random."
-        self.assertEqual(extraer_abstract(texto), "The dominant models are recurrent")
+    def test_mdpi_con_dos_puntos_despues_de_abstract(self):
+        texto = "Review\nTitulo\nAbstract: The use of GenAI is debated.\nKeywords: artificial intelligence"
+        self.assertEqual(extraer_abstract(texto), "The use of GenAI is debated")
 
-    def test_termina_en_ejemplos_de_figura(self):
-        texto = "Abstract\nChain of thought improves reasoning.\nA: The cafeteria had 23 apples.\nQ: Roger"
-        self.assertEqual(extraer_abstract(texto), "Chain of thought improves reasoning")
+    def test_la_palabra_keywords_dentro_del_abstract_no_lo_corta(self):
+        texto = "Abstract: Trends in citations, keywords, and co-authorship.\nKeywords: x"
+        self.assertEqual(extraer_abstract(texto), "Trends in citations, keywords, and co-authorship")
 
-    def test_elimina_el_aviso_de_copyright_de_acm(self):
-        texto = ("ABSTRACT\nartists paint, while\nPermission to make digital or hard copies of part\n"
-                 "of this work. https://doi.org/10.1145/3586183.3606763\nauthors write.\nCCS CONCEPTS\nx")
-        self.assertEqual(extraer_abstract(texto), "artists paint, while authors write")
+    def test_elsevier_con_abstract_espaciado(self):
+        texto = ("A R T I C L E  I N F O   \nKeywords: \nAI literacy \nA B S T R A C T   \n"
+                 "Since AI is finding its way into everyday life. \nMore text.   \n1. Introduction \nx")
+        self.assertEqual(extraer_abstract(texto), "Since AI is finding its way into everyday life. More text")
 
-    def test_normaliza_ligaduras_y_une_palabras_cortadas(self):
+    def test_elsevier_termina_en_tres_espacios_sin_introduccion(self):
+        texto = ("A B S T R A C T   \nThis article reports a review. \nOf 40 studies.   \n"
+                 "Since Alan Turing first articulated")
+        self.assertEqual(extraer_abstract(texto), "This article reports a review. Of 40 studies")
+
+    def test_elsevier_salta_las_palabras_clave_despues_del_titulo(self):
+        texto = ("A R T I C L E I N F O A B S T R A C T\nKeywords:\nHuman-centered AI\nAI in education\n"
+                 "The rapid expansion of Learning Analytics offers new systems for teachers and students.\n"
+                 "1. Introduction")
+        self.assertEqual(extraer_abstract(texto),
+                         "The rapid expansion of Learning Analytics offers new systems for teachers and students")
+
+    def test_introduccion_pegada_al_final_del_abstract(self):
+        texto = "A B S T R A C T\nWe highlight the new journal Computers & Education.1. Introduction\nx"
+        self.assertEqual(extraer_abstract(texto), "We highlight the new journal Computers & Education")
+
+    def test_wiley_termina_en_palabras_clave_espaciadas(self):
+        texto = "Abstract\nRecent literature underscores the need.\nK E Y W O R D S\nAI competence"
+        self.assertEqual(extraer_abstract(texto), "Recent literature underscores the need")
+
+    def test_une_palabras_cortadas_con_guion(self):
         texto = "Abstract\nAn eﬃcient gener-\native model.\nKeywords: x"
         self.assertEqual(extraer_abstract(texto), "An efficient generative model")
 
-    def test_titulo_es_la_primera_linea_no_vacia(self):
-        self.assertEqual(extraer_titulo("\n\n  Generative Adversarial Nets \nIan Goodfellow"),
-                         "Generative Adversarial Nets")
+    def test_elsevier_une_palabras_cortadas_sin_guion(self):
+        texto = ("A B S T R A C T   \nFifty-nine studies met the in\nclusion criteria. \nWe coded them. \n"
+                 "Then we wrote.   \n1. Introduction")
+        self.assertEqual(extraer_abstract(texto),
+                         "Fifty-nine studies met the inclusion criteria. We coded them. Then we wrote")
+
+    def test_numero_del_archivo(self):
+        self.assertEqual(numero_del_archivo("12. A meta systematic review.pdf"), 12)
+        self.assertEqual(numero_del_archivo("1. A.pdf"), 1)
+        self.assertEqual(numero_del_archivo("sin_numero.pdf"), -1)
 
 
 if __name__ == "__main__":
