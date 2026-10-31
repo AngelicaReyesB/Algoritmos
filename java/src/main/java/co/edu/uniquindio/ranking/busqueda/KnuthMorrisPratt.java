@@ -29,6 +29,21 @@ public class KnuthMorrisPratt implements AlgoritmoBusqueda {
     }
 
     /**
+     * Complejidad real del codigo (n = largo del texto, m = largo del patron).
+     * Tabla de prefijos: un solo recorrido del patron, O(m).
+     * Busqueda: el texto nunca retrocede, O(n) en el peor caso y en el promedio.
+     */
+    @Override
+    public String getComplejidadPreprocesamiento() {
+        return "O(m)";
+    }
+
+    @Override
+    public String getComplejidadBusqueda() {
+        return "O(n)";
+    }
+
+    /**
      * Paso 1: tabla de prefijos (tambien llamada tabla LPS o funcion de fallo).
      *
      * prefijo[i] = longitud del prefijo mas largo de patron[0..i] que ademas es

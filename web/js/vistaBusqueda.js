@@ -42,7 +42,7 @@ export async function buscar() {
         contenedor.innerHTML =
             crearResumen(resultado) +
             crearListaArticulos(resultado) +
-            crearTablaTiempos(resultado.tiempos);
+            crearTablaTiempos(resultado);
     } catch (error) {
         mostrarError(contenedor, error);
     } finally {
@@ -151,30 +151,53 @@ export function resaltar(texto, posiciones, longitudPatron) {
     return html + escaparHtml(texto.slice(desde));
 }
 
-/** Tabla de tiempos: dos filas por algoritmo (preprocesamiento y busqueda). */
-function crearTablaTiempos(tiempos) {
-    const filas = tiempos.map((t) => {
+/**
+ * La API manda la complejidad como texto simple ("O(m^3)"). Aqui se escapa y solo
+ * el exponente ^3 se convierte en <sup>3</sup>: se ve O(m³) sin permitir otro HTML.
+ */
+export function formatearComplejidad(texto) {
+    return escaparHtml(texto).replace(/\^(\d+)/g, "<sup>$1</sup>");
+}
+
+/** Numero con separador de miles al estilo colombiano: 24.913 */
+function formatearEntero(valor) {
+    return valor.toLocaleString("es-CO");
+}
+
+/**
+ * Tabla del analisis critico: complejidad del codigo frente al tiempo medido, separando
+ * preprocesamiento y busqueda, con las colisiones de Rabin-Karp en la misma tabla.
+ */
+function crearTablaTiempos(resultado) {
+    const filas = resultado.tiempos.map((t) => {
         const colisiones = t.colisiones === null || t.colisiones === undefined ? "—" : t.colisiones;
         return `
             <tr>
                 <td rowspan="2"><strong>${escaparHtml(t.algoritmo)}</strong></td>
-                ${crearCeldasEtapa("Preprocesamiento", t.preprocesamiento)}
+                ${crearCeldasEtapa("Preprocesamiento", t.complejidadPreprocesamiento, t.preprocesamiento)}
                 <td class="numero">—</td>
             </tr>
             <tr class="fila-destacada">
-                ${crearCeldasEtapa("Búsqueda", t.busqueda)}
+                ${crearCeldasEtapa("Búsqueda", t.complejidadBusqueda, t.busqueda)}
                 <td class="numero">${colisiones}</td>
             </tr>`;
     }).join("");
 
     return `
-        <h3>Tiempos de ejecución</h3>
+        <h3>Análisis crítico: complejidad y tiempo medido</h3>
+        <p class="nota">
+            n = <strong>${formatearEntero(resultado.longitudTexto)}</strong> caracteres
+            (los ${resultado.totalArticulos} abstracts juntos) ·
+            m = <strong>${resultado.longitudPatron}</strong> (largo del patrón) ·
+            σ = <strong>${formatearEntero(resultado.tamanoAlfabeto)}</strong> (caracteres distintos del texto)
+        </p>
         <div class="tabla-desplazable">
             <table class="tabla">
                 <thead>
                     <tr>
                         <th>Algoritmo</th>
                         <th>Etapa</th>
+                        <th>Complejidad del código</th>
                         <th class="numero">Repeticiones</th>
                         <th class="numero">Media (ms)</th>
                         <th class="numero">Desv. estándar (ms)</th>
@@ -185,18 +208,27 @@ function crearTablaTiempos(tiempos) {
                 <tbody>${filas}</tbody>
             </table>
         </div>
-        <p class="nota nota--tabla">
-            Cada etapa se mide sobre los 20 abstracts completos, con calentamiento y repeticiones.
-            En KMP y Boyer-Moore el preprocesamiento depende solo del patrón (se hace una vez);
-            en Rabin-Karp se hace por abstract, porque el hash de la primera ventana depende del texto.
-            Una colisión es un hash igual con texto distinto. Si varias personas buscan a la vez,
-            los tiempos pueden salir alterados.
-        </p>`;
+        <ul class="nota nota--tabla lista-simple">
+            <li>Cada etapa se mide sobre los ${resultado.totalArticulos} abstracts completos, con calentamiento
+                y repeticiones. En KMP y Boyer-Moore el preprocesamiento depende solo del patrón (se hace
+                una vez); en Rabin-Karp se hace por abstract, porque el hash de la primera ventana
+                depende del texto.</li>
+            <li>El sufijo bueno de Boyer-Moore se construye desde su definición, por eso el preprocesamiento
+                es O(m<sup>3</sup>). Existe una construcción en O(m), pero con patrones cortos el costo es
+                mínimo y se prefirió un código fácil de explicar. Pruebe con un patrón de 100 caracteres
+                para ver cómo crece.</li>
+            <li>σ aparece en la tabla del carácter malo clásica, O(m + σ); aquí se usa un mapa con los
+                caracteres del patrón y cuesta O(m).</li>
+            <li>Una colisión de Rabin-Karp es un hash igual con texto distinto: obliga a comparar carácter
+                por carácter, pero nunca se cuenta como ocurrencia.</li>
+            <li>Si varias personas buscan a la vez, los tiempos pueden salir alterados.</li>
+        </ul>`;
 }
 
-function crearCeldasEtapa(nombre, medicion) {
+function crearCeldasEtapa(nombre, complejidad, medicion) {
     return `
         <td>${nombre}</td>
+        <td>${formatearComplejidad(complejidad)}</td>
         <td class="numero">${medicion.repeticiones}</td>
         <td class="numero">${formatearMs(medicion.mediaMs)}</td>
         <td class="numero">${formatearMs(medicion.desviacionMs)}</td>

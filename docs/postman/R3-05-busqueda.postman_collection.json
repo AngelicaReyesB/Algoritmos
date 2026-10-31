@@ -24,7 +24,10 @@
               "pm.test('Hay 3 tiempos', () => pm.expect(r.tiempos.length).to.eql(3));",
               "pm.test('Un elemento por articulo', () => pm.expect(r.articulos.length).to.eql(r.totalArticulos));",
               "pm.test('Hay ocurrencias', () => pm.expect(r.totalOcurrencias).to.be.above(0));",
-              "pm.test('Cada articulo: los 3 algoritmos cuentan lo mismo', () => r.articulos.forEach(a => { pm.expect(a.ocurrencias['KMP']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Boyer-Moore']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Rabin-Karp']).to.eql(a.posiciones.length); }));"
+              "pm.test('Cada articulo: los 3 algoritmos cuentan lo mismo', () => r.articulos.forEach(a => { pm.expect(a.ocurrencias['KMP']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Boyer-Moore']).to.eql(a.posiciones.length); pm.expect(a.ocurrencias['Rabin-Karp']).to.eql(a.posiciones.length); }));",
+              "pm.test('R3-06: cada algoritmo trae su complejidad', () => r.tiempos.forEach(t => { pm.expect(t.complejidadPreprocesamiento).to.be.a('string').and.not.empty; pm.expect(t.complejidadBusqueda).to.be.a('string').and.not.empty; }));",
+              "pm.test('R3-06: el sufijo bueno de Boyer-Moore es O(m^3)', () => pm.expect(r.tiempos.find(t => t.algoritmo === 'Boyer-Moore').complejidadPreprocesamiento).to.eql('O(m^3)'));",
+              "pm.test('R3-06: n y sigma son positivos', () => { pm.expect(r.longitudTexto).to.be.above(0); pm.expect(r.tamanoAlfabeto).to.be.above(0); });"
             ]
           }
         }

@@ -91,6 +91,22 @@ public class RabinKarp implements AlgoritmoBusqueda {
     }
 
     /**
+     * Complejidad real del codigo (n = largo del texto, m = largo del patron).
+     * Preprocesamiento: h, hash del patron y hash de la primera ventana, O(m) por texto.
+     * Busqueda: hash rodante, O(n) en el promedio; O(nm) en el peor caso, cuando casi
+     * todas las ventanas tienen el mismo hash que el patron y hay que verificarlas.
+     */
+    @Override
+    public String getComplejidadPreprocesamiento() {
+        return "O(m)";
+    }
+
+    @Override
+    public String getComplejidadBusqueda() {
+        return "peor caso O(nm); promedio O(n)";
+    }
+
+    /**
      * Hash de texto[inicio .. inicio + largo - 1], calculado de izquierda a derecha:
      * hash = (hash * BASE + caracter) mod modulo.
      *
