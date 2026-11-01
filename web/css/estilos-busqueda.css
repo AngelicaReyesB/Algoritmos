@@ -1,18 +1,99 @@
-/* ===== Vista de busqueda ===== */
+/* ===== Vista de busqueda (R3) ===== */
 .formulario-busqueda {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-lg);
+    padding: var(--space-lg) 18px;
 }
 
-/* El estilo del campo esta en estilos.css (igual que los selectores) */
-.formulario-busqueda input {
+.formulario-busqueda__fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-md);
+}
+
+.formulario-busqueda__campo {
     flex: 1 1 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+}
+
+/* El estilo base del campo esta en estilos.css (igual que los selectores) */
+.formulario-busqueda input {
+    min-height: 44px;
+    font-family: var(--font-mono);
 }
 
 .formulario-busqueda .boton {
+    min-height: 44px;
     margin-bottom: 0;
+}
+
+.formulario-busqueda__ayuda {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+    font-size: 13px;
+    color: var(--text-2);
+}
+
+/* Resultados por algoritmo (izquierda) y articulos encontrados (derecha) */
+.rejilla-busqueda {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .rejilla-busqueda {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.resultados-busqueda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.resultado-busqueda {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.resultado-busqueda__encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+.resultado-busqueda__titulo {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0;
+    flex: 1 1 260px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+}
+
+.resultado-busqueda__titulo .tarjeta-articulo__numero {
+    width: 36px;
+    height: 24px;
+    font-size: 12.5px;
+}
+
+.resultado-busqueda__texto {
+    margin: var(--space-sm) 0 0;
+    font-size: var(--fs-sm);
+    line-height: 1.65;
+    color: var(--text-2);
 }
 
 mark {
@@ -22,12 +103,47 @@ mark {
     border-radius: 2px;
 }
 
+.plegable {
+    padding: var(--space-md) 18px;
+    font-size: var(--fs-sm);
+}
+
+.plegable summary {
+    color: var(--primary-text);
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .lista-simple {
     margin: var(--space-sm) 0 0;
     padding-left: 20px;
     font-size: var(--fs-sm);
 }
 
-.nota--tabla {
-    margin: var(--space-lg) 0 0;
+.notas-analisis {
+    margin: 0;
+    color: var(--text-2);
+    font-size: 13px;
+}
+
+.notas-analisis li + li {
+    margin-top: var(--space-xs);
+}
+
+/* Tabla del analisis critico: la celda del algoritmo abarca sus dos filas */
+.tabla--analisis .celda-algoritmo {
+    vertical-align: top;
+    border-right: 1px solid var(--border);
+}
+
+.tabla--analisis tbody tr:nth-child(even) td {
+    border-bottom: 2px solid var(--border-strong);
+}
+
+.tabla--analisis tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla sup {
+    font-size: 0.7em;
 }

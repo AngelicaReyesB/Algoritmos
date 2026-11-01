@@ -596,6 +596,7 @@ a:hover {
 
 /* ===== Tablas ===== */
 .tabla-desplazable {
+    position: relative; /* asi los textos .solo-lector de la tabla no se salen de este recuadro */
     overflow-x: auto; /* en celular la tabla se desliza dentro de su tarjeta */
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -953,7 +954,7 @@ a:hover {
     color: var(--text);
 }
 
-/* ===== Vista Top 15 ===== */
+/* ===== Vista Top 15 (la misma rejilla la usa Tiempos) ===== */
 .rejilla-top {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
@@ -1023,11 +1024,6 @@ a:hover {
 }
 
 /* ===== Vista de articulos ===== */
-.articulo {
-    padding: 14px 0;
-    border-top: 1px solid var(--border);
-}
-
 .lista-articulos {
     list-style: none;
     margin: 0;
@@ -1172,93 +1168,260 @@ a:hover {
     }
 }
 
-/* Clases de la vista de busqueda (se rediseña en su propio paso) */
-
-.articulo:first-of-type {
-    border-top: none;
-}
-
-.articulo__encabezado {
+/* ===== Vista de similitud (R1) ===== */
+.seleccion__acciones,
+.acciones {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-sm);
 }
 
-.articulo__archivo {
+.seleccion__acciones .boton,
+.acciones .boton,
+.acciones .control {
     margin: 0;
-    font-size: 15.5px;
 }
 
-.articulo__titulo {
-    margin: 2px 0 6px;
-    font-size: var(--fs-sm);
-    color: var(--text-2);
-}
-
-.articulo summary {
-    color: var(--primary-text);
-    font-weight: 600;
-    font-size: var(--fs-sm);
-    cursor: pointer;
-}
-
-.articulo__resumen {
-    margin: var(--space-sm) 0 0;
-    padding: 14px 18px;
-    border-radius: var(--radius-md);
-    background: var(--surface-2);
-    font-size: 14.5px;
-    line-height: 1.65;
-}
-
-/* ===== Vista de similitud ===== */
-.seleccion__acciones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
+.vista__encabezado .acciones {
+    margin-bottom: 20px;
 }
 
 .seleccion {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 6px var(--space-lg);
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: var(--space-sm);
 }
 
 .seleccion__opcion {
     display: flex;
-    align-items: flex-start;
-    gap: var(--space-sm);
-    padding: 6px;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    font-size: var(--fs-sm);
+    background: var(--surface);
+    font-size: 13.5px;
     cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
 }
 
 .seleccion__opcion:hover {
-    background: var(--surface-2);
+    border-color: var(--border-strong);
+}
+
+/* Marcado: borde azul, fondo azul suave y la casilla con check (no solo color) */
+.seleccion__opcion:has(input:checked) {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+    font-weight: 500;
 }
 
 .seleccion__opcion input {
-    margin-top: 4px;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
     accent-color: var(--primary);
 }
 
-.leyenda-articulos {
-    margin: 0 0 var(--space-lg);
-    padding-left: 0;
-    list-style: none;
-    font-size: var(--fs-sm);
+.seleccion__numero {
+    flex: none;
+    min-width: 24px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     color: var(--text-2);
+}
+
+.seleccion__titulo {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dato-suave strong {
+    color: var(--text);
+}
+
+.bloque-resultados {
+    margin-top: var(--space-lg);
+}
+
+.panel--separado,
+.recuadro--separado {
+    margin-top: var(--space-lg);
+}
+
+.leyenda-articulos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    font-size: 13px;
+}
+
+.leyenda-articulos__titulo {
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.ficha {
+    display: inline-flex;
+    gap: 4px;
+    max-width: 280px;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+}
+
+.ficha__texto {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-2);
+}
+
+/* Fila de titulo dentro de una tabla ("Algoritmos clasicos", "Modelos de IA") */
+.fila-grupo td {
+    background: var(--surface-2);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+}
+
+.proporcion__pista--escala {
+    display: block;
+    flex: none;
+    width: 120px;
+}
+
+/* Leyenda de colores de la matriz: de blanco (0) a azul (1) */
+.leyenda-escala {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 12px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+}
+
+.leyenda-escala__gradiente {
+    width: 120px;
+    height: 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: linear-gradient(to right, rgba(var(--heat), 0), rgba(var(--heat), 0.55));
+}
+
+.leyenda-escala__diagonal {
+    width: 14px;
+    height: 10px;
+    margin-left: var(--space-sm);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+}
+
+.matrices {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+    gap: var(--space-lg);
+}
+
+.matrices--anchas {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.matriz {
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.matriz__encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    font-size: var(--fs-sm);
 }
 
 .matriz-similitud th,
 .matriz-similitud td {
+    min-width: 52px;
+    padding: 6px 8px;
     text-align: center;
-    min-width: 56px;
+    font-size: 13px;
+    border: 1px solid var(--border);
 }
 
-/* ===== Vista de agrupamiento ===== */
+.celda-diagonal {
+    background: var(--surface-2);
+    color: var(--text-3);
+}
+
+/* Par mas parecido: recuadro grueso (se distingue sin depender del color) */
+.celda-maxima {
+    outline: 2px solid var(--text);
+    outline-offset: -2px;
+    font-weight: 600;
+}
+
+/* ===== Vista de agrupamiento (R2) ===== */
+.rejilla-dos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .rejilla-dos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.panel__nota {
+    margin: 0;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+}
+
+.dendrogramas {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.tarjeta-dendrograma {
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-lg);
+}
+
+.tarjeta-dendrograma__encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.tarjeta-dendrograma__encabezado h4 {
+    margin: 0;
+    font-size: 15px;
+}
+
 .dendrograma {
     overflow-x: auto; /* en celular el dendrograma se desliza dentro de su tarjeta */
 }
@@ -1278,6 +1441,10 @@ a:hover {
 .dendrograma__etiquetas text {
     font-size: 12px;
     fill: var(--text);
+}
+
+.dendrograma__numero {
+    font-weight: 600;
 }
 
 .dendrograma__eje {

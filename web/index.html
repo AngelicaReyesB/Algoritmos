@@ -75,6 +75,7 @@
             </div>
             <div id="contenido-articulos"></div>
         </section>
+
         <section id="vista-ranking" class="vista" role="tabpanel" hidden>
             <div class="vista__encabezado">
                 <div>
@@ -93,6 +94,7 @@
             </div>
             <div id="contenido-ranking"></div>
         </section>
+
         <section id="vista-tiempos" class="vista" role="tabpanel" hidden>
             <div class="vista__encabezado">
                 <div>
@@ -117,54 +119,92 @@
         </section>
 
         <section id="vista-busqueda" class="vista" role="tabpanel" hidden>
-            <h2>Búsqueda de un patrón</h2>
-            <p class="descripcion">
-                Busca un texto exacto en los 20 abstracts con KMP, Boyer-Moore y Rabin-Karp.
-                Distingue mayúsculas de minúsculas y acepta hasta 100 caracteres.
-                Las ocurrencias que se solapan (como "aa" en "aaaa") se cuentan todas, pero se resaltan juntas.
-            </p>
-            <form id="formulario-busqueda" class="formulario-busqueda">
-                <input id="campo-patron" type="text" maxlength="100" autocomplete="off"
-                       placeholder="Por ejemplo: model" aria-label="Patrón a buscar">
-                <button id="boton-buscar" class="boton" type="submit">Buscar</button>
+            <h2>Búsqueda de patrones</h2>
+            <p id="resumen-busqueda" class="descripcion">KMP, Boyer-Moore y Rabin-Karp sobre los 20 abstracts.</p>
+            <form id="formulario-busqueda" class="panel formulario-busqueda">
+                <div class="formulario-busqueda__fila">
+                    <label class="formulario-busqueda__campo">
+                        <span>Patrón a buscar</span>
+                        <input id="campo-patron" type="text" maxlength="100" autocomplete="off"
+                               placeholder="Por ejemplo: model" aria-describedby="ayuda-busqueda">
+                    </label>
+                    <button id="boton-buscar" class="boton" type="submit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="6.5"></circle>
+                            <path d="M16 16l4 4"></path>
+                        </svg>
+                        Buscar
+                    </button>
+                </div>
+                <div class="formulario-busqueda__ayuda">
+                    <span id="ayuda-busqueda">Distingue mayúsculas y minúsculas y cuenta las ocurrencias solapadas
+                        (como "aa" en "aaaa"), aunque se resaltan juntas.</span>
+                    <span id="contador-patron" class="dato-suave">0 / 100</span>
+                </div>
             </form>
-            <div id="contenido-busqueda" class="tarjeta">Escriba un patrón y presione "Buscar".</div>
+            <div id="contenido-busqueda" class="bloque-resultados">
+                <div class="vacio">
+                    <p class="vacio__titulo">Escriba un patrón y presione «Buscar».</p>
+                    <p>Los tres algoritmos buscan el mismo patrón y se mide el tiempo de cada uno.</p>
+                </div>
+            </div>
         </section>
 
         <section id="vista-similitud" class="vista" role="tabpanel" hidden>
-            <h2>Similitud textual</h2>
-            <p class="descripcion">
-                Elija 2 o más artículos y compare sus abstracts con 6 algoritmos: 4 clásicos
-                (Levenshtein, Needleman-Wunsch, coseno con TF-IDF y Jaccard) y 2 con IA (FastText y MiniLM).
-            </p>
-            <div class="tarjeta">
-                <div class="seleccion__acciones">
-                    <button id="boton-seleccionar-todos" class="boton boton--secundario" type="button">Seleccionar todos</button>
-                    <button id="boton-comparar" class="boton" type="button">Comparar seleccionados</button>
+            <h2>Similitud entre artículos</h2>
+            <p class="descripcion">4 algoritmos clásicos (Levenshtein, Needleman-Wunsch, coseno con TF-IDF y Jaccard)
+                y 2 modelos de IA (FastText y MiniLM) aplicados a los abstracts seleccionados.</p>
+            <section class="panel">
+                <div class="panel__encabezado">
+                    <div>
+                        <h3>Selección de artículos</h3>
+                        <p id="contador-seleccion" class="dato-suave" role="status"></p>
+                    </div>
+                    <div class="seleccion__acciones">
+                        <button id="boton-seleccionar-todos" class="boton boton--secundario" type="button">Seleccionar todos</button>
+                        <button id="boton-comparar" class="boton" type="button" disabled>Comparar seleccionados</button>
+                    </div>
                 </div>
-                <div id="seleccion-articulos" class="seleccion">Cargando…</div>
-            </div>
-            <div id="contenido-similitud" class="tarjeta tarjeta--separada">
-                Seleccione los artículos y presione "Comparar seleccionados".
+                <div id="seleccion-articulos" class="panel__cuerpo seleccion"></div>
+            </section>
+            <div id="contenido-similitud" class="bloque-resultados">
+                <div class="vacio">
+                    <p class="vacio__titulo">Seleccione al menos 2 artículos para realizar la comparación.</p>
+                    <p>Marque las casillas de la lista y pulse «Comparar seleccionados».</p>
+                </div>
             </div>
         </section>
 
         <section id="vista-agrupamiento" class="vista" role="tabpanel" hidden>
-            <h2>Agrupamiento jerárquico</h2>
-            <p class="descripcion">
-                Agrupa los 20 abstracts con 3 criterios (Single, Complete y Average linkage) y dibuja un
-                dendrograma para cada uno. La correlación cofenética indica cuál agrupa de forma más coherente.
-            </p>
-            <label class="control">
-                Similitud para calcular la distancia:
-                <select id="selector-similitud">
-                    <option value="tfidf" selected>Coseno con TF-IDF</option>
-                    <option value="minilm">MiniLM</option>
-                </select>
-            </label>
-            <button id="boton-agrupar" class="boton" type="button">Agrupar</button>
-            <div id="contenido-agrupamiento" class="tarjeta">
-                Elija la similitud y presione "Agrupar".
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Agrupamiento jerárquico</h2>
+                    <p id="resumen-agrupamiento" class="descripcion">Single, Complete y Average linkage sobre los 20 abstracts ·
+                        distancia = 1 − similitud.</p>
+                </div>
+                <div class="acciones">
+                    <label class="control">
+                        Similitud para calcular la distancia
+                        <select id="selector-similitud">
+                            <option value="tfidf" selected>Coseno con TF-IDF</option>
+                            <option value="minilm">MiniLM</option>
+                        </select>
+                    </label>
+                    <button id="boton-agrupar" class="boton" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <path d="M4 6h6v12H4M10 12h6M16 8h4v8h-4"></path>
+                        </svg>
+                        Agrupar
+                    </button>
+                </div>
+            </div>
+            <div id="contenido-agrupamiento">
+                <div class="vacio">
+                    <p class="vacio__titulo">Elija la similitud y presione «Agrupar».</p>
+                    <p>Se calculan los tres dendrogramas y la correlación cofenética de cada uno.</p>
+                </div>
             </div>
         </section>
     </main>
