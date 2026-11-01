@@ -3,28 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking de términos · Análisis de Algoritmos</title>
+    <title>Análisis de abstracts · Análisis de Algoritmos</title>
     <link rel="icon" href="img/logo-uniquindio.png">
+    <!-- Tema guardado: se aplica antes de pintar la pagina para que no parpadee -->
+    <script>
+        try {
+            const guardado = localStorage.getItem("tema");
+            const oscuro = guardado ? guardado === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+            document.documentElement.dataset.theme = oscuro ? "dark" : "light";
+        } catch (error) {
+            document.documentElement.dataset.theme = "light";
+        }
+    </script>
+    <!-- IBM Plex Sans y Mono. Sin internet se usa la fuente del sistema -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos-busqueda.css">
     <!-- Chart.js 4.4.1 (version con librerias). Copia local: funciona sin internet -->
     <script src="js/vendor/chart.umd.js"></script>
     <script type="module" src="js/app.js"></script>
 </head>
 <body>
     <header class="encabezado">
-        <div class="encabezado__logos">
-            <img class="encabezado__logo"
-                 src="img/logo-uniquindio.png"
-                 alt="Logo de la Universidad del Quindío">
-            <img class="encabezado__logo"
-                 src="img/logo-ingenieria.png"
-                 alt="Logo de la Facultad de Ingeniería">
+        <!-- Franja institucional: siempre blanca para que los logos se vean igual en los dos temas -->
+        <div class="franja-institucional">
+            <div class="contenedor franja-institucional__contenido">
+                <div class="franja-institucional__logos">
+                    <img class="franja-institucional__logo franja-institucional__logo--uq"
+                         src="img/logo-uniquindio.png"
+                         alt="Universidad del Quindío">
+                    <span class="franja-institucional__separador" aria-hidden="true"></span>
+                    <img class="franja-institucional__logo franja-institucional__logo--fi"
+                         src="img/logo-ingenieria.png"
+                         alt="Facultad de Ingeniería">
+                </div>
+                <p class="franja-institucional__texto">
+                    Programa de Ingeniería de Sistemas y Computación
+                    <span>Armenia, Quindío · 2026-2</span>
+                </p>
+            </div>
         </div>
-        <div class="contenedor">
-            <p class="encabezado__materia">Análisis de Algoritmos · Universidad del Quindío</p>
-            <h1 class="encabezado__titulo">Ranking de términos con Counting, Radix y Bucket Sort</h1>
-            <p id="estado-api" class="estado">Conectando con la API…</p>
+
+        <div class="contenedor encabezado__contenido">
+            <div class="encabezado__textos">
+                <p class="encabezado__materia">Proyecto final · Análisis de Algoritmos</p>
+                <h1 class="encabezado__titulo">Análisis de abstracts sobre IA en educación</h1>
+                <p id="estado-api" class="estado" role="status">Conectando con la API…</p>
+            </div>
+            <button id="boton-tema" class="boton-tema" type="button" aria-pressed="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"></path>
+                </svg>
+                <span id="texto-tema">Tema oscuro</span>
+            </button>
         </div>
+    </header>
     </header>
 
     <nav class="navegacion" aria-label="Secciones">
@@ -32,98 +69,163 @@
             <button class="pestana" role="tab" data-vista="articulos" aria-selected="true">Artículos</button>
             <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
             <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
-            <button class="pestana" role="tab" data-vista="busqueda" aria-selected="false">Búsqueda</button>
-            <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud</button>
-            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento</button>
+            <span class="navegacion__separador" aria-hidden="true"></span>
+            <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud (R1)</button>
+            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento (R2)</button>
+            <button class="pestana" role="tab" data-vista="busqueda" aria-selected="false">Búsqueda (R3)</button>
         </div>
     </nav>
 
     <main class="contenedor">
         <section id="vista-articulos" class="vista" role="tabpanel">
-            <h2>Artículos del corpus</h2>
-            <p class="descripcion">Los 20 artículos cargados en la base de datos, con su título y abstract.</p>
-            <div id="contenido-articulos" class="tarjeta">Cargando…</div>
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Artículos analizados</h2>
+                    <p id="resumen-articulos" class="descripcion"></p>
+                </div>
+                <p id="nota-articulos" class="nota"></p>
+            </div>
+            <div id="contenido-articulos"></div>
         </section>
 
         <section id="vista-ranking" class="vista" role="tabpanel" hidden>
-            <h2>Top 15 de términos</h2>
-            <p class="descripcion">Términos más frecuentes ordenados con cada algoritmo.</p>
-            <label class="control">
-                Cantidad de términos:
-                <select id="selector-top">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15" selected>15</option>
-                    <option value="20">20</option>
-                </select>
-            </label>
-            <div id="contenido-ranking" class="tarjeta">Cargando…</div>
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Términos más frecuentes</h2>
+                    <p id="resumen-ranking" class="descripcion"></p>
+                </div>
+                <div class="control">
+                    <span id="etiqueta-top">Cantidad de términos</span>
+                    <div id="selector-top" class="segmentado" role="radiogroup" aria-labelledby="etiqueta-top">
+                        <button type="button" role="radio" aria-checked="false" data-top="5">5</button>
+                        <button type="button" role="radio" aria-checked="false" data-top="10">10</button>
+                        <button type="button" role="radio" aria-checked="true" data-top="15">15</button>
+                        <button type="button" role="radio" aria-checked="false" data-top="20">20</button>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido-ranking"></div>
         </section>
 
         <section id="vista-tiempos" class="vista" role="tabpanel" hidden>
-            <h2>Tiempos de ejecución</h2>
-            <p class="descripcion">Tiempo de cada etapa, medido con System.nanoTime().</p>
-            <button id="boton-medir" class="boton" type="button">Medir tiempos</button>
-            <div id="contenido-tiempos" class="tarjeta">
-                Presiona "Medir tiempos" para ejecutar la medición. Tarda unos segundos.
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Tiempos de ejecución</h2>
+                    <p id="resumen-tiempos" class="descripcion">Cada etapa se mide por separado con System.nanoTime().</p>
+                </div>
+                <button id="boton-medir" class="boton" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="13" r="8"></circle>
+                        <path d="M12 9v4l2.5 2M9 2h6"></path>
+                    </svg>
+                    <span id="texto-boton-medir">Medir tiempos</span>
+                </button>
+            </div>
+            <div id="contenido-tiempos">
+                <div class="vacio">
+                    <p class="vacio__titulo">Todavía no hay mediciones.</p>
+                    <p>Presione «Medir tiempos» para ejecutar la medición en el servidor. Tarda unos segundos.</p>
+                </div>
             </div>
         </section>
 
         <section id="vista-busqueda" class="vista" role="tabpanel" hidden>
-            <h2>Búsqueda de un patrón</h2>
-            <p class="descripcion">
-                Busca un texto exacto en los 20 abstracts con KMP, Boyer-Moore y Rabin-Karp.
-                Distingue mayúsculas de minúsculas y acepta hasta 100 caracteres.
-                Las ocurrencias que se solapan (como "aa" en "aaaa") se cuentan todas, pero se resaltan juntas.
-            </p>
-            <form id="formulario-busqueda" class="formulario-busqueda">
-                <input id="campo-patron" type="text" maxlength="100" autocomplete="off"
-                       placeholder="Por ejemplo: model" aria-label="Patrón a buscar">
-                <button id="boton-buscar" class="boton" type="submit">Buscar</button>
+            <h2>Búsqueda de patrones</h2>
+            <p id="resumen-busqueda" class="descripcion">KMP, Boyer-Moore y Rabin-Karp sobre los 20 abstracts.</p>
+            <form id="formulario-busqueda" class="panel formulario-busqueda">
+                <div class="formulario-busqueda__fila">
+                    <label class="formulario-busqueda__campo">
+                        <span>Patrón a buscar</span>
+                        <input id="campo-patron" type="text" maxlength="100" autocomplete="off"
+                               placeholder="Por ejemplo: model" aria-describedby="ayuda-busqueda">
+                    </label>
+                    <button id="boton-buscar" class="boton" type="submit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="6.5"></circle>
+                            <path d="M16 16l4 4"></path>
+                        </svg>
+                        Buscar
+                    </button>
+                </div>
+                <div class="formulario-busqueda__ayuda">
+                    <span id="ayuda-busqueda">Distingue mayúsculas y minúsculas y cuenta las ocurrencias solapadas
+                        (como "aa" en "aaaa"), aunque se resaltan juntas.</span>
+                    <span id="contador-patron" class="dato-suave">0 / 100</span>
+                </div>
             </form>
-            <div id="contenido-busqueda" class="tarjeta">Escriba un patrón y presione "Buscar".</div>
+            <div id="contenido-busqueda" class="bloque-resultados">
+                <div class="vacio">
+                    <p class="vacio__titulo">Escriba un patrón y presione «Buscar».</p>
+                    <p>Los tres algoritmos buscan el mismo patrón y se mide el tiempo de cada uno.</p>
+                </div>
+            </div>
         </section>
 
         <section id="vista-similitud" class="vista" role="tabpanel" hidden>
-            <h2>Similitud textual</h2>
-            <p class="descripcion">
-                Elija 2 o más artículos y compare sus abstracts con 6 algoritmos: 4 clásicos
-                (Levenshtein, Needleman-Wunsch, coseno con TF-IDF y Jaccard) y 2 con IA (FastText y MiniLM).
-            </p>
-            <div class="tarjeta">
-                <div class="seleccion__acciones">
-                    <button id="boton-seleccionar-todos" class="boton boton--secundario" type="button">Seleccionar todos</button>
-                    <button id="boton-comparar" class="boton" type="button">Comparar seleccionados</button>
+            <h2>Similitud entre artículos</h2>
+            <p class="descripcion">4 algoritmos clásicos (Levenshtein, Needleman-Wunsch, coseno con TF-IDF y Jaccard)
+                y 2 modelos de IA (FastText y MiniLM) aplicados a los abstracts seleccionados.</p>
+            <section class="panel">
+                <div class="panel__encabezado">
+                    <div>
+                        <h3>Selección de artículos</h3>
+                        <p id="contador-seleccion" class="dato-suave" role="status"></p>
+                    </div>
+                    <div class="seleccion__acciones">
+                        <button id="boton-seleccionar-todos" class="boton boton--secundario" type="button">Seleccionar todos</button>
+                        <button id="boton-comparar" class="boton" type="button" disabled>Comparar seleccionados</button>
+                    </div>
                 </div>
-                <div id="seleccion-articulos" class="seleccion">Cargando…</div>
-            </div>
-            <div id="contenido-similitud" class="tarjeta tarjeta--separada">
-                Seleccione los artículos y presione "Comparar seleccionados".
+                <div id="seleccion-articulos" class="panel__cuerpo seleccion"></div>
+            </section>
+            <div id="contenido-similitud" class="bloque-resultados">
+                <div class="vacio">
+                    <p class="vacio__titulo">Seleccione al menos 2 artículos para realizar la comparación.</p>
+                    <p>Marque las casillas de la lista y pulse «Comparar seleccionados».</p>
+                </div>
             </div>
         </section>
 
         <section id="vista-agrupamiento" class="vista" role="tabpanel" hidden>
-            <h2>Agrupamiento jerárquico</h2>
-            <p class="descripcion">
-                Agrupa los 20 abstracts con 3 criterios (Single, Complete y Average linkage) y dibuja un
-                dendrograma para cada uno. La correlación cofenética indica cuál agrupa de forma más coherente.
-            </p>
-            <label class="control">
-                Similitud para calcular la distancia:
-                <select id="selector-similitud">
-                    <option value="tfidf" selected>Coseno con TF-IDF</option>
-                    <option value="minilm">MiniLM</option>
-                </select>
-            </label>
-            <button id="boton-agrupar" class="boton" type="button">Agrupar</button>
-            <div id="contenido-agrupamiento" class="tarjeta">
-                Elija la similitud y presione "Agrupar".
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Agrupamiento jerárquico</h2>
+                    <p id="resumen-agrupamiento" class="descripcion">Single, Complete y Average linkage sobre los 20 abstracts ·
+                        distancia = 1 − similitud.</p>
+                </div>
+                <div class="acciones">
+                    <label class="control">
+                        Similitud para calcular la distancia
+                        <select id="selector-similitud">
+                            <option value="tfidf" selected>Coseno con TF-IDF</option>
+                            <option value="minilm">MiniLM</option>
+                        </select>
+                    </label>
+                    <button id="boton-agrupar" class="boton" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" aria-hidden="true">
+                            <path d="M4 6h6v12H4M10 12h6M16 8h4v8h-4"></path>
+                        </svg>
+                        Agrupar
+                    </button>
+                </div>
+            </div>
+            <div id="contenido-agrupamiento">
+                <div class="vacio">
+                    <p class="vacio__titulo">Elija la similitud y presione «Agrupar».</p>
+                    <p>Se calculan los tres dendrogramas y la correlación cofenética de cada uno.</p>
+                </div>
             </div>
         </section>
     </main>
 
     <footer class="pie">
-        <div class="contenedor">Angelica María Reyes · Andrés Felipe Zambrano</div>
+        <div class="contenedor pie__contenido">
+            <span>Proyecto final · Análisis de Algoritmos · Facultad de Ingeniería · 2026-2</span>
+            <span>Angelica María Reyes · Andrés Felipe Zambrano</span>
+        </div>
     </footer>
 </body>
 </html>
