@@ -129,8 +129,10 @@ function crearTablaResumen(resultados, articulos) {
 }
 
 /** Color de una celda: blanco = 0 (nada en comun), azul = 1 (iguales). */
+/** Color de una celda: blanco = 0 (nada en comun), azul = 1 (iguales). */
 function colorDeFondo(valor) {
-    return `rgba(36, 89, 194, ${(valor * 0.55).toFixed(2)})`;
+    // --heat es el azul del tema (claro u oscuro), definido en estilos.css
+    return `rgba(var(--heat), ${(valor * 0.55).toFixed(2)})`;
 }
 
 /** Matriz de un algoritmo: filas y columnas son los articulos comparados. */

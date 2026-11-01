@@ -36,15 +36,16 @@ export function dibujarBarrasChartJs(idCanvas, elementos, formatearValor = (valo
 
     // Mismos colores y fuente que el resto del sitio (variables de estilos.css)
     const estilos = getComputedStyle(document.documentElement);
-    Chart.defaults.font.family = estilos.getPropertyValue("--fuente").trim();
-
+    Chart.defaults.font.family = estilos.getPropertyValue("--font-sans").trim();
+    Chart.defaults.color = estilos.getPropertyValue("--text-2").trim();            // textos de los ejes
+    Chart.defaults.borderColor = estilos.getPropertyValue("--border").trim();      // lineas de la cuadricula
     graficos[idCanvas] = new Chart(canvas, {
         type: "bar",
         data: {
             labels: elementos.map((e) => e.etiqueta),
             datasets: [{
                 data: elementos.map((e) => e.valor),
-                backgroundColor: estilos.getPropertyValue("--color-primario").trim(),
+                backgroundColor: estilos.getPropertyValue("--primary").trim(),
                 borderRadius: 4,
             }],
         },

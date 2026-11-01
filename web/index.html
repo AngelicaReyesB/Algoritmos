@@ -3,27 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking de términos · Análisis de Algoritmos</title>
+    <title>Análisis de abstracts · Análisis de Algoritmos</title>
     <link rel="icon" href="img/logo-uniquindio.png">
+    <!-- Tema guardado: se aplica antes de pintar la pagina para que no parpadee -->
+    <script>
+        try {
+            const guardado = localStorage.getItem("tema");
+            const oscuro = guardado ? guardado === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+            document.documentElement.dataset.theme = oscuro ? "dark" : "light";
+        } catch (error) {
+            document.documentElement.dataset.theme = "light";
+        }
+    </script>
+    <!-- IBM Plex Sans y Mono. Sin internet se usa la fuente del sistema -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos-busqueda.css">
     <!-- Chart.js 4.4.1 (version con librerias). Copia local: funciona sin internet -->
     <script src="js/vendor/chart.umd.js"></script>
     <script type="module" src="js/app.js"></script>
 </head>
 <body>
     <header class="encabezado">
-        <div class="encabezado__logos">
-            <img class="encabezado__logo"
-                 src="img/logo-uniquindio.png"
-                 alt="Logo de la Universidad del Quindío">
-            <img class="encabezado__logo"
-                 src="img/logo-ingenieria.png"
-                 alt="Logo de la Facultad de Ingeniería">
-        </div>
-        <div class="contenedor">
-            <p class="encabezado__materia">Análisis de Algoritmos · Universidad del Quindío</p>
-            <h1 class="encabezado__titulo">Ranking de términos con Counting, Radix y Bucket Sort</h1>
-            <p id="estado-api" class="estado">Conectando con la API…</p>
+        <div class="contenedor encabezado__contenido">
+            <div class="encabezado__logos">
+                <img class="encabezado__logo"
+                     src="img/logo-uniquindio.png"
+                     alt="Logo de la Universidad del Quindío">
+                <img class="encabezado__logo"
+                     src="img/logo-ingenieria.png"
+                     alt="Logo de la Facultad de Ingeniería">
+            </div>
+            <div class="encabezado__textos">
+                <p class="encabezado__materia">Análisis de Algoritmos · Universidad del Quindío</p>
+                <h1 class="encabezado__titulo">Análisis de abstracts sobre IA en educación</h1>
+                <p id="estado-api" class="estado" role="status">Conectando con la API…</p>
+            </div>
+            <button id="boton-tema" class="boton-tema" type="button" aria-pressed="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"></path>
+                </svg>
+                <span id="texto-tema">Tema oscuro</span>
+            </button>
         </div>
     </header>
 
@@ -32,9 +57,10 @@
             <button class="pestana" role="tab" data-vista="articulos" aria-selected="true">Artículos</button>
             <button class="pestana" role="tab" data-vista="ranking" aria-selected="false">Top 15</button>
             <button class="pestana" role="tab" data-vista="tiempos" aria-selected="false">Tiempos</button>
-            <button class="pestana" role="tab" data-vista="busqueda" aria-selected="false">Búsqueda</button>
-            <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud</button>
-            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento</button>
+            <span class="navegacion__separador" aria-hidden="true"></span>
+            <button class="pestana" role="tab" data-vista="similitud" aria-selected="false">Similitud (R1)</button>
+            <button class="pestana" role="tab" data-vista="agrupamiento" aria-selected="false">Agrupamiento (R2)</button>
+            <button class="pestana" role="tab" data-vista="busqueda" aria-selected="false">Búsqueda (R3)</button>
         </div>
     </nav>
 
@@ -123,7 +149,10 @@
     </main>
 
     <footer class="pie">
-        <div class="contenedor">Angelica María Reyes · Andrés Felipe Zambrano</div>
+        <div class="contenedor pie__contenido">
+            <span>Proyecto final · Análisis de Algoritmos · Facultad de Ingeniería · 2026-2</span>
+            <span>Angélica María Reyes · Andrés Felipe Zambrano</span>
+        </div>
     </footer>
 </body>
 </html>
