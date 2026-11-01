@@ -93,13 +93,26 @@
             </div>
             <div id="contenido-ranking"></div>
         </section>
-
         <section id="vista-tiempos" class="vista" role="tabpanel" hidden>
-            <h2>Tiempos de ejecución</h2>
-            <p class="descripcion">Tiempo de cada etapa, medido con System.nanoTime().</p>
-            <button id="boton-medir" class="boton" type="button">Medir tiempos</button>
-            <div id="contenido-tiempos" class="tarjeta">
-                Presiona "Medir tiempos" para ejecutar la medición. Tarda unos segundos.
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Tiempos de ejecución</h2>
+                    <p id="resumen-tiempos" class="descripcion">Cada etapa se mide por separado con System.nanoTime().</p>
+                </div>
+                <button id="boton-medir" class="boton" type="button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="13" r="8"></circle>
+                        <path d="M12 9v4l2.5 2M9 2h6"></path>
+                    </svg>
+                    <span id="texto-boton-medir">Medir tiempos</span>
+                </button>
+            </div>
+            <div id="contenido-tiempos">
+                <div class="vacio">
+                    <p class="vacio__titulo">Todavía no hay mediciones.</p>
+                    <p>Presione «Medir tiempos» para ejecutar la medición en el servidor. Tarda unos segundos.</p>
+                </div>
             </div>
         </section>
 
@@ -159,7 +172,7 @@
     <footer class="pie">
         <div class="contenedor pie__contenido">
             <span>Proyecto final · Análisis de Algoritmos · Facultad de Ingeniería · 2026-2</span>
-            <span>Angélica María Reyes · Andrés Felipe Zambrano</span>
+            <span>Angelica María Reyes · Andrés Felipe Zambrano</span>
         </div>
     </footer>
 </body>

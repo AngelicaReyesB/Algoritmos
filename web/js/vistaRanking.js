@@ -7,8 +7,8 @@
  *   ordenamiento, para comprobar que producen el mismo orden.
  */
 import { obtenerRanking } from "./api.js";
-import { crearContenedorChartJs, dibujarBarrasChartJs } from "./graficosChartJs.js";
-import { crearGraficoBarras, escaparHtml, mostrarCargando, mostrarError } from "./utilidades.js";
+import { crearGraficosAlternables, crearSelectorGrafico, mostrarVersionGrafico } from "./graficosChartJs.js";
+import { escaparHtml, mostrarCargando, mostrarError } from "./utilidades.js";
 
 const contenedor = document.getElementById("contenido-ranking");
 const subtitulo = document.getElementById("resumen-ranking");
@@ -53,14 +53,10 @@ function crearPanelGrafico(elementos) {
         <section class="panel">
             <div class="panel__encabezado">
                 <h3>Frecuencia por término</h3>
-                <div class="segmentado segmentado--pequeno" role="radiogroup" aria-label="Versión del gráfico">
-                    <button type="button" role="radio" aria-checked="true" data-grafico="html">HTML y CSS</button>
-                    <button type="button" role="radio" aria-checked="false" data-grafico="chartjs">Chart.js</button>
-                </div>
+                ${crearSelectorGrafico("ranking")}
             </div>
             <div class="panel__cuerpo">
-                <div id="grafico-html">${crearGraficoBarras(elementos)}</div>
-                <div id="grafico-chartjs" hidden>${crearContenedorChartJs("grafico-ranking-chartjs", elementos.length)}</div>
+                ${crearGraficosAlternables("ranking", elementos)}
                 <p class="nota nota--pie">Ocurrencias de cada término en los 20 abstracts.
                     La versión HTML y CSS no usa librerías; la otra usa Chart.js.</p>
             </div>
@@ -150,15 +146,7 @@ selectorTop.addEventListener("click", (evento) => {
 /** Selector "HTML y CSS" / "Chart.js" del grafico. */
 contenedor.addEventListener("click", (evento) => {
     const boton = evento.target.closest("[data-grafico]");
-    if (!boton) {
-        return;
-    }
-    const usarChartJs = boton.dataset.grafico === "chartjs";
-    boton.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", b === boton));
-    document.getElementById("grafico-html").hidden = usarChartJs;
-    document.getElementById("grafico-chartjs").hidden = !usarChartJs;
-    // Chart.js se dibuja cuando su contenedor ya es visible, para que tome bien el tamano
-    if (usarChartJs) {
-        dibujarBarrasChartJs("grafico-ranking-chartjs", elementosGrafico);
+    if (boton) {
+        mostrarVersionGrafico(boton, elementosGrafico);
     }
 });
