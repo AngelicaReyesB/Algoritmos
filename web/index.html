@@ -66,9 +66,14 @@
 
     <main class="contenedor">
         <section id="vista-articulos" class="vista" role="tabpanel">
-            <h2>Artículos del corpus</h2>
-            <p class="descripcion">Los 20 artículos cargados en la base de datos, con su título y abstract.</p>
-            <div id="contenido-articulos" class="tarjeta">Cargando…</div>
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Artículos analizados</h2>
+                    <p id="resumen-articulos" class="descripcion"></p>
+                </div>
+                <p id="nota-articulos" class="nota"></p>
+            </div>
+            <div id="contenido-articulos"></div>
         </section>
 
         <section id="vista-ranking" class="vista" role="tabpanel" hidden>

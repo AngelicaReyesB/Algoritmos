@@ -18,9 +18,28 @@ export function escaparHtml(texto) {
 
 /** Muestra un mensaje de error dentro de un contenedor. */
 export function mostrarError(contenedor, error) {
-    contenedor.innerHTML = `<p class="mensaje-error">No se pudo cargar: ${escaparHtml(error.message)}</p>`;
+    contenedor.innerHTML = `
+        <div class="mensaje-error" role="alert">
+            <p class="mensaje-error__titulo">No se pudo cargar la información</p>
+            <p class="mensaje-error__detalle">${escaparHtml(error.message)}.
+            Verifique que el servidor esté en ejecución e intente nuevamente.</p>
+        </div>`;
 }
 
+/**
+ * Estado de carga: un circulo que gira, un titulo y, si se pasa, un detalle.
+ * Ejemplo: mostrarCargando(contenedor, "Calculando…", "La primera vez tarda unos segundos.")
+ */
+export function mostrarCargando(contenedor, titulo, detalle = "") {
+    contenedor.innerHTML = `
+        <div class="cargando" role="status">
+            <span class="cargando__circulo" aria-hidden="true"></span>
+            <div>
+                <p class="cargando__titulo">${escaparHtml(titulo)}</p>
+                ${detalle ? `<p class="cargando__detalle">${escaparHtml(detalle)}</p>` : ""}
+            </div>
+        </div>`;
+}
 
 /**
  * Grafico de barras horizontales hecho con <div> (version sin librerias).
