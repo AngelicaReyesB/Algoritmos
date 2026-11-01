@@ -146,22 +146,74 @@ a:hover {
     padding-top: 18px;
 }
 
-.encabezado__logos {
-    display: flex;
-    gap: var(--space-sm);
-    flex: none;
+/* Franja institucional con los logos (blanca en los dos temas) */
+.franja-institucional {
+    background: #ffffff;
+    border-bottom: 3px solid #0b6b32; /* verde institucional de la Universidad del Quindio */
 }
 
-.encabezado__logo {
-    height: 48px;
+.franja-institucional__contenido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.franja-institucional__logos {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.franja-institucional__logo--uq {
+    height: 64px;
     width: auto;
 }
 
-/* Los logos son oscuros: en el tema oscuro van sobre un fondo blanco para que se vean */
-:root[data-theme="dark"] .encabezado__logo {
-    padding: 3px;
-    border-radius: var(--radius-sm);
-    background: #ffffff;
+.franja-institucional__logo--fi {
+    height: 50px;
+    width: auto;
+}
+
+.franja-institucional__separador {
+    width: 1px;
+    height: 48px;
+    background: #c2cad5;
+}
+
+/* Texto con colores fijos: la franja es blanca tambien en el tema oscuro */
+.franja-institucional__texto {
+    margin: 0;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: #17202b;
+}
+
+.franja-institucional__texto span {
+    display: block;
+    font-weight: 400;
+    color: #4d5868;
+}
+
+@media (max-width: 640px) {
+    .franja-institucional__logo--uq {
+        height: 48px;
+    }
+
+    .franja-institucional__logo--fi {
+        height: 32px;
+    }
+
+    .franja-institucional__separador {
+        height: 36px;
+    }
+
+    .franja-institucional__texto {
+        display: none;
+    }
 }
 
 .encabezado__textos {
@@ -234,11 +286,18 @@ a:hover {
     background: var(--surface-2);
 }
 
-/* Celular: los logos y el boton de tema en la primera fila, los textos debajo */
+/* Celular: el boton de tema queda a la derecha del titulo, solo con el icono */
 @media (max-width: 640px) {
+    .encabezado__contenido {
+        flex-wrap: nowrap;
+    }
+
     .encabezado__textos {
-        order: 3;
-        flex-basis: 100%;
+        flex: 1 1 0;
+    }
+
+    .encabezado__titulo {
+        font-size: 20px;
     }
 
     /* Solo el icono: el texto queda para lectores de pantalla */

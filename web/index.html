@@ -27,17 +27,28 @@
 </head>
 <body>
     <header class="encabezado">
-        <div class="contenedor encabezado__contenido">
-            <div class="encabezado__logos">
-                <img class="encabezado__logo"
-                     src="img/logo-uniquindio.png"
-                     alt="Logo de la Universidad del Quindío">
-                <img class="encabezado__logo"
-                     src="img/logo-ingenieria.png"
-                     alt="Logo de la Facultad de Ingeniería">
+        <!-- Franja institucional: siempre blanca para que los logos se vean igual en los dos temas -->
+        <div class="franja-institucional">
+            <div class="contenedor franja-institucional__contenido">
+                <div class="franja-institucional__logos">
+                    <img class="franja-institucional__logo franja-institucional__logo--uq"
+                         src="img/logo-uniquindio.png"
+                         alt="Universidad del Quindío">
+                    <span class="franja-institucional__separador" aria-hidden="true"></span>
+                    <img class="franja-institucional__logo franja-institucional__logo--fi"
+                         src="img/logo-ingenieria.png"
+                         alt="Facultad de Ingeniería">
+                </div>
+                <p class="franja-institucional__texto">
+                    Programa de Ingeniería de Sistemas y Computación
+                    <span>Armenia, Quindío · 2026-2</span>
+                </p>
             </div>
+        </div>
+
+        <div class="contenedor encabezado__contenido">
             <div class="encabezado__textos">
-                <p class="encabezado__materia">Análisis de Algoritmos · Universidad del Quindío</p>
+                <p class="encabezado__materia">Proyecto final · Análisis de Algoritmos</p>
                 <h1 class="encabezado__titulo">Análisis de abstracts sobre IA en educación</h1>
                 <p id="estado-api" class="estado" role="status">Conectando con la API…</p>
             </div>
@@ -50,6 +61,7 @@
                 <span id="texto-tema">Tema oscuro</span>
             </button>
         </div>
+    </header>
     </header>
 
     <nav class="navegacion" aria-label="Secciones">
