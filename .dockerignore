@@ -8,5 +8,4 @@ python
 docs
 results
 
-# Los PDF no se versionan (ver .gitignore): tampoco van en la imagen
-data/pdfs/*.pdf
+

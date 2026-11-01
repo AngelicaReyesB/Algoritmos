@@ -4,7 +4,13 @@
 #   Detener:               docker compose down      (la base se conserva)
 #   Detener y borrar BD:   docker compose down -v
 #
-# La contrasena se puede cambiar creando un archivo .env con:  DB_PASSWORD=otra_clave
+# Las claves se leen del archivo .env (copiar .env.example a .env y completarlo).
+#
+# Publicar en internet con Ngrok (ademas de lo anterior):
+#   docker compose --profile publico up -d --build
+#   La URL publica HTTPS aparece en  http://localhost:4040  o con:
+#   docker compose logs ngrok | grep -i "url="
+# Sin --profile publico, Ngrok no se levanta (uso local normal).
 services:
   postgres:
     image: postgres:16
@@ -14,7 +20,7 @@ services:
       POSTGRES_USER: ranking
       POSTGRES_PASSWORD: ${DB_PASSWORD:-ranking}
     ports:
-      - "55432:5432"   # para seguir ejecutando la aplicacion desde IntelliJ
+      - "127.0.0.1:55432:5432"   # solo desde este equipo, para IntelliJ (la base nunca se expone por Ngrok)
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:       # la aplicacion espera a que la base este lista
@@ -33,13 +39,30 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/ranking   # "postgres" es el nombre del servicio de arriba
       DB_USER: ranking
       DB_PASSWORD: ${DB_PASSWORD:-ranking}
-      JAVA_OPTS: -Xmx350m
-      # CARGAR_CORPUS: "false"   # en produccion, cuando la base ya tiene los articulos
+      JAVA_OPTS: -Xmx256m -XX:+UseSerialGC -XX:MaxMetaspaceSize=96m -Xss512k -XX:ReservedCodeCacheSize=48m
     ports:
       - "8081:8080"
     volumes:
       - ./data:/app/data:ro    # aqui entran los PDF del profesor (no estan en la imagen)
     mem_limit: 512m            # prueba local con el mismo tope que tendria un servidor pequeno
+    restart: unless-stopped
+
+  # Tunel HTTPS publico. Solo se levanta con:  --profile publico
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ranking-ngrok
+    profiles: ["publico"]
+    depends_on:
+      - app
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:-}
+    # Si se define NGROK_DOMAIN (dominio gratis de la cuenta) la URL es siempre la misma;
+    # si no, Ngrok asigna una URL nueva cada vez.
+    command: http app:8080 ${NGROK_DOMAIN:+--url=${NGROK_DOMAIN}}
+    ports:
+      - "127.0.0.1:4040:4040"  # panel de Ngrok, solo accesible desde este equipo
+    mem_limit: 64m
+    restart: unless-stopped
 
 volumes:
   pgdata:

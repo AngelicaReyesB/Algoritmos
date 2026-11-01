@@ -19,10 +19,9 @@ target/
 .DS_Store
 Thumbs.db
 
-# Corpus de PDFs (no se versiona)
-data/pdfs/*.pdf
-
 # Resultados generados al ejecutar
 results/**/*.csv
 results/**/*.png
 results/**/*.txt
+
+.env

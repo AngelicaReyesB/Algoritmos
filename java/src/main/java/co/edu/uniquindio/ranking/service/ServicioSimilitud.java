@@ -13,6 +13,7 @@ import co.edu.uniquindio.ranking.similitud.Jaccard;
 import co.edu.uniquindio.ranking.similitud.Levenshtein;
 import co.edu.uniquindio.ranking.similitud.NeedlemanWunsch;
 import co.edu.uniquindio.ranking.texto.TokenizadorPropio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class ServicioSimilitud {
 
     private final RepositorioArticulos repositorio;
     private final Path archivoFastText;
+    private final Path archivoMiniLm;
 
     /**
      * Los 6 algoritmos. Se crean la primera vez que se usan (no al arrancar):
@@ -44,10 +46,17 @@ public class ServicioSimilitud {
      */
     private List<AlgoritmoSimilitud> algoritmos;
 
+    @Autowired
     public ServicioSimilitud(RepositorioArticulos repositorio,
-                             @Value("${ranking.archivo-fasttext}") String archivoFastText) {
+                             @Value("${ranking.archivo-fasttext}") String archivoFastText,
+                             @Value("${ranking.archivo-minilm:../data/embeddings/minilm-vectores.json}") String archivoMiniLm) {
         this.repositorio = repositorio;
         this.archivoFastText = Path.of(archivoFastText);
+        this.archivoMiniLm = archivoMiniLm == null ? null : Path.of(archivoMiniLm);
+    }
+
+    public ServicioSimilitud(RepositorioArticulos repositorio, String archivoFastText) {
+        this(repositorio, archivoFastText, null);
     }
 
     /**
@@ -131,7 +140,7 @@ public class ServicioSimilitud {
                         new CosenoTfIdf(tokenizador, repositorio.listarResumenes()),
                         new Jaccard(tokenizador),
                         new SimilitudFastText(tokenizador, new ModeloFastText(archivoFastText)),
-                        new SimilitudMiniLm());
+                        new SimilitudMiniLm(archivoMiniLm));
             } catch (IOException e) {
                 throw new UncheckedIOException("No se pudo leer el modelo de FastText: " + archivoFastText, e);
             }
