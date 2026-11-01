@@ -75,20 +75,23 @@
             </div>
             <div id="contenido-articulos"></div>
         </section>
-
         <section id="vista-ranking" class="vista" role="tabpanel" hidden>
-            <h2>Top 15 de términos</h2>
-            <p class="descripcion">Términos más frecuentes ordenados con cada algoritmo.</p>
-            <label class="control">
-                Cantidad de términos:
-                <select id="selector-top">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15" selected>15</option>
-                    <option value="20">20</option>
-                </select>
-            </label>
-            <div id="contenido-ranking" class="tarjeta">Cargando…</div>
+            <div class="vista__encabezado">
+                <div>
+                    <h2>Términos más frecuentes</h2>
+                    <p id="resumen-ranking" class="descripcion"></p>
+                </div>
+                <div class="control">
+                    <span id="etiqueta-top">Cantidad de términos</span>
+                    <div id="selector-top" class="segmentado" role="radiogroup" aria-labelledby="etiqueta-top">
+                        <button type="button" role="radio" aria-checked="false" data-top="5">5</button>
+                        <button type="button" role="radio" aria-checked="false" data-top="10">10</button>
+                        <button type="button" role="radio" aria-checked="true" data-top="15">15</button>
+                        <button type="button" role="radio" aria-checked="false" data-top="20">20</button>
+                    </div>
+                </div>
+            </div>
+            <div id="contenido-ranking"></div>
         </section>
 
         <section id="vista-tiempos" class="vista" role="tabpanel" hidden>

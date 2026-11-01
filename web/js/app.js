@@ -78,7 +78,7 @@ pestanas.forEach((pestana) => {
     pestana.addEventListener("click", () => mostrarVista(pestana.dataset.vista));
 });
 
-document.getElementById("selector-top").addEventListener("change", cargarRanking);
+
 document.getElementById("boton-medir").addEventListener("click", medirTiempos);
 document.getElementById("formulario-busqueda").addEventListener("submit", (evento) => {
     evento.preventDefault(); // sin esto el formulario recargaria la pagina
