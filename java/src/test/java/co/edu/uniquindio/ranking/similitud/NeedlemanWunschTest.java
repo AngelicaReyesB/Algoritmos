@@ -79,8 +79,21 @@ class NeedlemanWunschTest {
     @Test
     void similitudNormalizaElPuntaje() {
         // puntaje = +1 (ai) -1 (in frente a un espacio) +1 (education) = 1
-        // similitud = (puntaje + largo mayor) / (largo corto + largo mayor) = (1 + 3) / (2 + 3)
-        assertEquals(0.8, needlemanWunsch.similitud("ai in education", "ai education"), 1e-9);
+        // similitud = (puntaje + largo mayor) / (2 * largo corto) = (1 + 3) / (2 * 2)
+        // Da 1 porque B esta completa dentro de A
+        assertEquals(1.0, needlemanWunsch.similitud("ai in education", "ai education"), 1e-9);
+    }
+
+    @Test
+    void similitudConMaximoReal() {
+        // [gato, perro, casa] con [perro, casa, sol]: puntaje 0, largos 3 y 3
+        // similitud = (0 + 3) / (2 * 3) = 0.5
+        assertEquals(0.5, needlemanWunsch.similitud("gato perro casa", "perro casa sol"), 1e-9);
+    }
+
+    @Test
+    void similitudConUnTextoVacioEsCero() {
+        assertEquals(0.0, needlemanWunsch.similitud("", "deep learning models"), 1e-9);
     }
 
     @Test

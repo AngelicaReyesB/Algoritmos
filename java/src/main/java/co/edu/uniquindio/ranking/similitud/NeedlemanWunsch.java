@@ -67,14 +67,16 @@ public class NeedlemanWunsch implements AlgoritmoSimilitud {
     /**
      * Lleva el puntaje del mejor alineamiento a un valor entre 0 y 1.
      *
-     * Con n = largo de la lista mas corta y M = largo de la mas larga:
-     * - Si todo coincide, el puntaje maximo posible es +n (n coincidencias).
-     * - Si nada coincide, el puntaje es -M (cada posicion resta 1).
-     * Entonces: similitud = (puntaje + M) / (n + M).
+     * Con s = largo de la lista mas corta y l = largo de la mas larga:
+     * - Peor caso: nada coincide y el puntaje es -l (cada posicion resta 1).
+     * - Mejor caso: como sobran l - s palabras, siempre hay al menos l - s
+     *   espacios (-1 cada uno) y como mucho s coincidencias (+1 cada una).
+     *   El puntaje maximo es s - (l - s) = 2s - l.
+     * Entonces: similitud = (puntaje + l) / ((2s - l) + l) = (puntaje + l) / (2s).
      *
      * Ejemplo: [ai, in, education] con [ai, education]
      * puntaje = +1 (ai) -1 (in frente a un espacio) +1 (education) = 1
-     * similitud = (1 + 3) / (2 + 3) = 0.8
+     * similitud = (1 + 3) / (2 * 2) = 1.0, porque B esta completa dentro de A.
      */
     @Override
     public double similitud(String textoA, String textoB) {
@@ -85,7 +87,10 @@ public class NeedlemanWunsch implements AlgoritmoSimilitud {
         }
         int largoCorto = Math.min(a.size(), b.size());
         int largoMayor = Math.max(a.size(), b.size());
-        return (double) (puntaje(a, b) + largoMayor) / (largoCorto + largoMayor);
+        if (largoCorto == 0) {
+            return 0.0; // un texto vacio y otro con palabras no tienen nada en comun
+        }
+        return (double) (puntaje(a, b) + largoMayor) / (2 * largoCorto);
     }
 
     /** Puntos que suma comparar dos palabras: +1 si son iguales, -1 si no. */
